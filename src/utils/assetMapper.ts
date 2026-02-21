@@ -15,16 +15,20 @@ const allAssets = import.meta.glob<{ default: ImageMetadata | string }>('/src/as
  * @returns The ImageMetadata object (for images) or string (for videos), or undefined if not found.
  */
 function getAssetMetadataByPath(relativePath: string): ImageMetadata | string | undefined {
-  // Prioritize exact match
-  const exactGlobKey = `/src/assets/${relativePath}`;
-  if (allAssets[exactGlobKey]) {
-    return allAssets[exactGlobKey].default;
+  // Construct the full path that matches the glob keys
+  const fullPath = `/src/assets/${relativePath}`;
+
+  // Check for an exact match first
+  if (allAssets[fullPath]) {
+    // Return the .default property, which holds the ImageMetadata or raw string
+    return allAssets[fullPath].default;
   }
 
-  // If no exact match, search for a key that ends with the provided path.
-  // This is less efficient, but robust for various input formats.
+  // If no exact match, search for a key that ends with the provided relativePath.
+  // This handles cases where the input `url` might not include the full `/src/assets/` prefix.
   const foundKey = Object.keys(allAssets).find(key => key.endsWith(`/${relativePath}`));
   if (foundKey) {
+    // Return the .default property from the found module
     return allAssets[foundKey].default;
   }
 
