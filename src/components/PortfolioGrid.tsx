@@ -174,10 +174,12 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
           {/* Image Container */}
           <div className="flex flex-col items-center gap-4 max-w-4xl w-full">
             <ResponsiveImage
-              src={selectedImage}
+              src={typeof selectedImageMetadata === 'object' && selectedImageMetadata !== null ? selectedImageMetadata.src : (selectedImageMetadata as string || '')}
               alt={getCaption(currentImageIndex)}
               className="max-h-[75vh] max-w-[90vw] object-contain rounded-sm"
               priority={true}
+              {...(typeof selectedImageMetadata === 'object' && selectedImageMetadata !== null && selectedImageMetadata.width && { width: selectedImageMetadata.width })}
+              {...(typeof selectedImageMetadata === 'object' && selectedImageMetadata !== null && selectedImageMetadata.height && { height: selectedImageMetadata.height })}
             />
             <div className="bg-black/50 backdrop-blur-sm px-6 py-3 rounded-sm max-w-2xl">
               <p className="text-white text-sm font-semibold leading-relaxed text-center">
