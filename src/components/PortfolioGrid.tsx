@@ -147,14 +147,14 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
       </div>
 
       {/* Image Lightbox */}
-      {selectedImage && (
+      {selectedImageMetadata && (
         <div
           className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
-          onClick={() => setSelectedImage(null)}
+          onClick={() => setSelectedImageMetadata(null)}
         >
           {/* Close Button */}
           <button
-            onClick={() => setSelectedImage(null)}
+            onClick={() => setSelectedImageMetadata(null)}
             className="absolute top-6 right-6 z-50 bg-white/10 hover:bg-white/20 transition-colors p-2 rounded-full"
           >
             <X className="w-6 h-6 text-white" />
