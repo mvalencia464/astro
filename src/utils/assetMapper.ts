@@ -20,16 +20,18 @@ function getAssetMetadataByPath(relativePath: string): ImageMetadata | string | 
 
   // Check for an exact match first
   if (allAssets[fullPath]) {
-    // Return the .default property, which holds the ImageMetadata or raw string
-    return allAssets[fullPath].default;
+    // Return the .default property, ensuring we get the actual metadata object/string.
+    // The || allAssets[fullPath] is a safeguard if .default somehow doesn't exist,
+    // though for eager globs it should always be present for a matched asset.
+    return allAssets[fullPath]?.default || allAssets[fullPath];
   }
 
   // If no exact match, search for a key that ends with the provided relativePath.
   // This handles cases where the input `url` might not include the full `/src/assets/` prefix.
   const foundKey = Object.keys(allAssets).find(key => key.endsWith(`/${relativePath}`));
   if (foundKey) {
-    // Return the .default property from the found module
-    return allAssets[foundKey].default;
+    // Return the .default property from the found module, with the same safeguard.
+    return allAssets[foundKey]?.default || allAssets[foundKey];
   }
 
   return undefined;
