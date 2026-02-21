@@ -1,0 +1,98 @@
+---
+import { Phone, Mail, MapPin, ArrowRight } from 'lucide-react';
+---
+
+<footer class="bg-stone-950 border-t border-stone-800">
+  <!-- Main Footer Content -->
+  <div class="container mx-auto px-6 py-16">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+      <!-- Company Info -->
+      <div class="col-span-1">
+        <div class="text-2xl font-bold font-display text-white uppercase tracking-tighter mb-6">
+          Deck<span class="text-orange-600">Masters</span>
+        </div>
+        <p class="text-stone-500 text-sm leading-relaxed mb-6">
+          Anchorage's premium deck builder. Expert craftsmanship, transparent pricing, and frost-proof engineering for Alaska winters.
+        </p>
+        <div class="flex gap-4">
+          <a href="#" class="text-stone-500 hover:text-orange-500 transition-colors">Facebook</a>
+          <a href="#" class="text-stone-500 hover:text-orange-500 transition-colors">Instagram</a>
+          <a href="#" class="text-stone-500 hover:text-orange-500 transition-colors">Google</a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-span-1">
+        <h3 class="font-bold uppercase tracking-widest text-sm mb-6 text-white">Navigation</h3>
+        <ul class="space-y-3">
+          <li><a href="/" class="text-stone-500 hover:text-white transition-colors text-sm">Home</a></li>
+          <li><a href="#portfolio" class="text-stone-500 hover:text-white transition-colors text-sm">Portfolio</a></li>
+          <li><a href="#reviews" class="text-stone-500 hover:text-white transition-colors text-sm">Reviews</a></li>
+          <li><a href="#process" class="text-stone-500 hover:text-white transition-colors text-sm">Process</a></li>
+          <li><a href="#services" class="text-stone-500 hover:text-white transition-colors text-sm">Services</a></li>
+        </ul>
+      </div>
+
+      <!-- Services -->
+      <div class="col-span-1">
+        <h3 class="font-bold uppercase tracking-widest text-sm mb-6 text-white">Services</h3>
+        <ul class="space-y-3">
+          <li><a href="#" class="text-stone-500 hover:text-white transition-colors text-sm">Composite Decks</a></li>
+          <li><a href="#" class="text-stone-500 hover:text-white transition-colors text-sm">Cedar Decks</a></li>
+          <li><a href="#" class="text-stone-500 hover:text-white transition-colors text-sm">Repairs & Maintenance</a></li>
+          <li><a href="#" class="text-stone-500 hover:text-white transition-colors text-sm">Custom Design</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="col-span-1">
+        <h3 class="font-bold uppercase tracking-widest text-sm mb-6 text-white">Contact</h3>
+        <ul class="space-y-4">
+          <li class="flex items-start gap-3">
+            <Phone class="w-4 h-4 text-orange-600 mt-1 shrink-0" />
+            <div>
+              <a href="tel:+19075551234" class="text-stone-400 hover:text-white transition-colors text-sm font-bold">(907) 555-1234</a>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <Mail class="w-4 h-4 text-orange-600 mt-1 shrink-0" />
+            <div>
+              <a href="mailto:info@deckmasters.com" class="text-stone-400 hover:text-white transition-colors text-sm font-bold">info@deckmasters.com</a>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <MapPin class="w-4 h-4 text-orange-600 mt-1 shrink-0" />
+            <div>
+              <p class="text-stone-400 text-sm">Anchorage, Alaska<br />Serving South Anchorage, Hillside & Eagle River</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="border-t border-stone-800 py-8 flex flex-col md:flex-row justify-between items-center gap-6">
+      <p class="text-stone-600 text-xs uppercase tracking-widest">
+        © 2024 Deck Masters AK. All rights reserved.
+      </p>
+      <div class="flex gap-6">
+        <a href="/privacy" class="text-stone-600 hover:text-stone-400 text-xs uppercase tracking-widest transition-colors">Privacy Policy</a>
+        <a href="/terms" class="text-stone-600 hover:text-stone-400 text-xs uppercase tracking-widest transition-colors">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom CTA Banner -->
+  <div class="bg-gradient-to-r from-orange-600 to-orange-700 py-8">
+    <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div>
+        <h3 class="text-white font-display font-bold text-lg uppercase tracking-tight mb-2">Ready to Start Your Project?</h3>
+        <p class="text-white/90 text-sm">Get your free consultation and custom quote today</p>
+      </div>
+      <a href="#quote-form" class="flex items-center gap-2 bg-stone-950 text-white px-8 py-3 font-bold uppercase tracking-widest hover:bg-stone-900 transition-colors whitespace-nowrap">
+        Get Started
+        <ArrowRight class="w-4 h-4" />
+      </a>
+    </div>
+  </div>
+</footer>

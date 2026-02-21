@@ -1,0 +1,150 @@
+---
+import { Image } from 'astro:assets';
+import image from '../assets/hillside-mountain-view.webp';
+
+const siteTitle = 'Deckmasters | Custom Deck Construction in Anchorage, Alaska';
+const siteDescription = 'Expert deck builders specializing in permafrost-engineered decks for Alaska\'s extreme climate.';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{siteTitle}</title>
+    <meta name="description" content={siteDescription} />
+    <meta name="theme-color" content="#ffffff" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: #fff;
+      }
+
+      header {
+        padding: 2rem 1.5rem;
+        background: #fff;
+        border-bottom: 1px solid #eee;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        color: #000;
+        margin-bottom: 0.5rem;
+      }
+
+      .tagline {
+        font-size: 1.1rem;
+        color: #666;
+        max-width: 600px;
+      }
+
+      .hero {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .hero img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .cta {
+        padding: 3rem 1.5rem;
+        text-align: center;
+        background: #f9f9f9;
+      }
+
+      .cta h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        color: #000;
+      }
+
+      .cta p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        color: #666;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 1rem 2rem;
+        background: #0066cc;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: 600;
+        transition: background 0.2s;
+      }
+
+      .btn:hover {
+        background: #0052a3;
+      }
+
+      footer {
+        padding: 2rem 1.5rem;
+        text-align: center;
+        color: #666;
+        border-top: 1px solid #eee;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 640px) {
+        h1 {
+          font-size: 1.8rem;
+        }
+
+        .cta h2 {
+          font-size: 1.3rem;
+        }
+
+        .cta p {
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Deckmasters</h1>
+      <p class="tagline">Custom deck construction designed for Alaska's extreme climate</p>
+    </header>
+
+    <main>
+      <section class="hero">
+        <Image
+          src={image}
+          alt="Mountain view overlooking Anchorage"
+          widths={[640, 1024, 1280]}
+          sizes="(max-width: 640px) 640px, (max-width: 1024px) 1024px, 1280px"
+          loading="eager"
+        />
+      </section>
+
+      <section class="cta">
+        <h2>Expert Deck Construction for Anchorage</h2>
+        <p>
+          Permafrost-engineered decks built to withstand Alaska's harsh seasonal weather. Year-round construction with proven techniques for extreme climates.
+        </p>
+        <a href="/services/custom-deck-construction-anchorage" class="btn">View Our Services</a>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Deckmasters. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

@@ -1,10 +1,8 @@
 {
-  "name": "users-mauriciovalencia-desktop-astro",
+  "name": "deckmasters-astro",
   "type": "module",
-  "version": "0.0.1",
-  "engines": {
-    "node": ">=22.12.0"
-  },
+  "version": "1.0.0",
+  "description": "Deck Masters - Anchorage Premium Deck Builder (Astro 6.0)",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -12,7 +10,17 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.0.0-beta.8",
-    "astro": "^6.0.0-beta.6"
+    "@astrojs/react": "^4.4.2",
+    "@tailwindcss/vite": "^4.2.0",
+    "astro": "^6.0.0-beta.14",
+    "jiti": "^2.6.1",
+    "lucide-react": "latest",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwindcss": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "typescript": "^5.8.0"
   }
 }

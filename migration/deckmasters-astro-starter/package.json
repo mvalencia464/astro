@@ -1,0 +1,25 @@
+{
+  "name": "deckmasters-astro",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Deck Masters - Anchorage Premium Deck Builder (Astro 6.0)",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^6.0.0-beta.0",
+    "@astrojs/react": "^4.0.0-beta.0",
+    "@astrojs/tailwind": "^0.5.0-beta.0",
+    "lucide-react": "^0.554.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwindcss": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "typescript": "^5.8.0"
+  }
+}

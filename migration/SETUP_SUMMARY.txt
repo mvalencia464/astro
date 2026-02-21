@@ -1,0 +1,118 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║           DECK MASTERS - ASTRO 6.0 BETA MIGRATION PACKAGE                 ║
+║                     Everything is Ready in Downloads                      ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+📦 THREE FILES IN YOUR DOWNLOADS FOLDER:
+
+1. deckmasters-astro-starter.zip (207 KB)
+   └─ Complete Astro 6.0 beta starter with all code, components, config
+
+2. deckmasters-assets-optimized.zip (38 MB)
+   └─ All 66 image assets (organized by category)
+
+3. ASTRO_MIGRATION_README.md (this guide)
+   └─ Step-by-step setup instructions
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 QUICK START (5 MINUTES):
+
+1. Create new Astro 6.0 beta project (or use your existing one):
+   npm create astro@latest --version 6.0.0-beta.0 deckmasters-astro
+   cd deckmasters-astro
+
+2. Extract deckmasters-astro-starter.zip into this folder
+
+3. Extract deckmasters-assets-optimized.zip → drag assets/ into src/
+
+4. Install & run:
+   npm install
+   npm run dev
+
+   → Open http://localhost:3000
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ WHAT'S INCLUDED:
+
+Code:
+  ✓ Astro 6.0 beta config (astro.config.mjs, tailwind.config.mjs)
+  ✓ React components (QuoteForm, PortfolioGrid, etc.)
+  ✓ All utilities & data files
+  ✓ Base layout with GA4, Turnstile, fonts
+  ✓ Example homepage (src/pages/index.astro)
+  ⚠️ Beta warning in docs
+
+Assets:
+  ✓ 66 image files (main versions, no variants)
+  ✓ Organized: hero/, portfolio/, process/, content/, branding/
+  ✓ Astro auto-generates responsive sizes at build time
+
+Docs:
+  ✓ ASTRO_SETUP_GUIDE.md (detailed checklist)
+  ✓ README.md (project overview)
+  ✓ This file (quick reference)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 KEY CHANGES FROM VITE TO ASTRO:
+
+Routing:        #/ → /               (file-based)
+Images:         /public/ → src/assets (use <Image /> component)
+Components:     React everywhere → Astro + React mix
+Tailwind:       Via plugin → Integration
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚙️ AFTER SETUP:
+
+1. Add .env.local:
+   VITE_GOOGLE_MAPS_API_KEY=your_key
+   VITE_TURNSTILE_SITE_KEY=your_key
+
+2. Create Header & Footer components (Astro files)
+
+3. Convert additional pages:
+   - src/pages/products.astro
+   - src/pages/privacy.astro
+   - src/pages/terms.astro
+   - src/pages/services/[service].astro
+
+4. Test forms & analytics
+
+5. Deploy to Netlify
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 READ THESE FILES FIRST:
+
+Inside deckmasters-astro-starter.zip:
+  1. README.md
+  2. ASTRO_SETUP_GUIDE.md (read beta note section)
+  3. src/pages/index.astro (see the pattern)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❓ TROUBLESHOOTING:
+
+Images not loading?
+  → Check src/assets/ structure
+  → Use <Image /> from astro:assets, not <img />
+
+React components not interactive?
+  → Add client:load directive
+  → Check browser console
+
+Tailwind not working?
+  → npm install (again)
+  → Restart npm run dev
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Everything is extracted from your current Vite project.
+All code, styling, components, and assets are ready to use.
+Just extract both ZIPs, install, and run dev.
+
+Happy migrating! 🚀
+
