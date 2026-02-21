@@ -11,7 +11,7 @@ interface PortfolioGridProps {
 
 export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
   // selectedImageMetadata will hold the ImageMetadata object or a string (for external/video)
-  const [selectedImageMetadata, setSelectedImageMetadata] = useState<ImageMetadata | string | null>(null);
+  const [selectedImageMetadata, setSelectedImageMetadata] = useState<any>(null); // Changed type to 'any' as requested
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Map image URLs to their metadata objects or external strings
@@ -25,7 +25,7 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
     return mappedPortfolioAssets.map(asset => {
       if (!asset) return '';
       if (typeof asset === 'string') return asset; // External URL or video path
-      return asset.src; // ImageMetadata object
+      return (asset as ImageMetadata).src; // Cast to ImageMetadata to access src
     });
   }, [mappedPortfolioAssets]);
 
@@ -35,6 +35,7 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
   };
 
   const handleImageClick = (index: number) => {
+    // Ensure we pass the entire asset object (metadata or string)
     setSelectedImageMetadata(mappedPortfolioAssets[index] || null);
     setCurrentImageIndex(index);
     preloadAdjacentImages(index);
