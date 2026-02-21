@@ -1,53 +1,67 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { mapAssetUrl, isExternalUrl } from '../utils/assetMapper';
 import ResponsiveImage from './ResponsiveImage';
 import { PORTFOLIO_GALLERY } from '../constants/portfolio';
+import type { ImageMetadata } from 'astro';
 
 interface PortfolioGridProps {
   images?: string[];
 }
 
 export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  // selectedImageMetadata will hold the ImageMetadata object or a string (for external/video)
+  const [selectedImageMetadata, setSelectedImageMetadata] = useState<ImageMetadata | string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const portfolioImages = images || PORTFOLIO_GALLERY.map(item => item.src);
+  // Map image URLs to their metadata objects or external strings
+  const mappedPortfolioAssets = useMemo(() => {
+    const sourceImages = images || PORTFOLIO_GALLERY.map(item => item.src);
+    return sourceImages.map(url => mapAssetUrl(url));
+  }, [images]);
+
+  // Derived array of actual image sources (strings) for preloading, etc.
+  const portfolioImageSources = useMemo(() => {
+    return mappedPortfolioAssets.map(asset => {
+      if (!asset) return '';
+      if (typeof asset === 'string') return asset; // External URL or video path
+      return asset.src; // ImageMetadata object
+    });
+  }, [mappedPortfolioAssets]);
 
   const getCaption = (index: number) => {
     if (images) return `Project Image ${index + 1}`;
     return PORTFOLIO_GALLERY[index]?.caption || '';
   };
 
-
   const handleImageClick = (index: number) => {
-    setSelectedImage(portfolioImages[index]);
+    setSelectedImageMetadata(mappedPortfolioAssets[index] || null);
     setCurrentImageIndex(index);
-    // Preload adjacent images for smooth navigation
     preloadAdjacentImages(index);
   };
 
   const preloadAdjacentImages = (currentIndex: number) => {
-    const nextIndex = (currentIndex + 1) % portfolioImages.length;
-    const prevIndex = (currentIndex - 1 + portfolioImages.length) % portfolioImages.length;
+    const nextIndex = (currentIndex + 1) % portfolioImageSources.length;
+    const prevIndex = (currentIndex - 1 + portfolioImageSources.length) % portfolioImageSources.length;
 
-    // Preload in background
+    // Preload in background using the resolved src string
     const nextImg = new Image();
-    nextImg.src = portfolioImages[nextIndex];
+    nextImg.src = portfolioImageSources[nextIndex];
 
     const prevImg = new Image();
-    prevImg.src = portfolioImages[prevIndex];
+    prevImg.src = portfolioImageSources[prevIndex];
   };
 
   const handleNextImage = () => {
-    const nextIndex = (currentImageIndex + 1) % portfolioImages.length;
-    setSelectedImage(portfolioImages[nextIndex]);
+    const nextIndex = (currentImageIndex + 1) % mappedPortfolioAssets.length;
+    setSelectedImageMetadata(mappedPortfolioAssets[nextIndex] || null);
     setCurrentImageIndex(nextIndex);
     preloadAdjacentImages(nextIndex);
   };
 
   const handlePrevImage = () => {
-    const prevIndex = (currentImageIndex - 1 + portfolioImages.length) % portfolioImages.length;
-    setSelectedImage(portfolioImages[prevIndex]);
+    const prevIndex = (currentImageIndex - 1 + mappedPortfolioAssets.length) % mappedPortfolioAssets.length;
+    setSelectedImageMetadata(mappedPortfolioAssets[prevIndex] || null);
     setCurrentImageIndex(prevIndex);
     preloadAdjacentImages(prevIndex);
   };
@@ -55,7 +69,7 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (!selectedImage) return;
+      if (!selectedImageMetadata) return;
 
       if (e.key === 'ArrowRight') {
         e.preventDefault();
@@ -64,13 +78,13 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
         e.preventDefault();
         handlePrevImage();
       } else if (e.key === 'Escape') {
-        setSelectedImage(null);
+        setSelectedImageMetadata(null);
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [selectedImage, currentImageIndex]);
+  }, [selectedImageMetadata, currentImageIndex, mappedPortfolioAssets]);
 
   return (
     <section className="py-24 bg-stone-900 relative overflow-hidden">
