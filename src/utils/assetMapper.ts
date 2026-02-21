@@ -1,9 +1,9 @@
 import type { ImageMetadata } from 'astro';
 
-// Eagerly glob all local assets (images and videos) under src/assets/
-// The glob pattern is '/src/assets/' from the project root perspective.
-// From assetMapper.ts in src/utils/, this translates to '../assets/'.
-const allAssets = import.meta.glob<{ default: ImageMetadata | string }>('/src/assets/**/*.{jpeg,jpg,png,gif,webp,svg,mp4}', { eager: true });
+// Eagerly glob all portfolio images under src/assets/portfolio/
+// The glob pattern is '/src/assets/portfolio/' from the project root perspective.
+// From assetMapper.ts in src/utils/, this translates to '../assets/portfolio/'.
+const allAssets = import.meta.glob<{ default: ImageMetadata | string }>('/src/assets/portfolio/**/*.{webp,jpg,jpeg,png}', { eager: true });
 
 
 /**
