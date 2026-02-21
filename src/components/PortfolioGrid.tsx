@@ -111,26 +111,38 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
 
         {/* Image Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-[250px]">
-          {portfolioImages.map((imageUrl, index) => (
-            <div
-              key={index}
-              onClick={() => handleImageClick(index)}
-              className="relative group overflow-hidden rounded-sm bg-stone-800 cursor-pointer"
-            >
-              <ResponsiveImage
-                src={imageUrl}
-                alt={getCaption(index)}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                containerClassName="absolute inset-0 w-full h-full"
-                sizes="(max-width: 640px) 320px, (max-width: 1024px) 640px, (max-width: 1440px) 1024px, 640px"
-                priority={false}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                <p className="text-white text-xs font-semibold leading-tight">{getCaption(index)}</p>
+          {mappedPortfolioAssets.map((asset, index) => {
+            // Extract src, width, height from the asset (ImageMetadata or string)
+            const src = typeof asset === 'object' && asset !== null && 'src' in asset ? asset.src : (asset as string || '');
+            const width = typeof asset === 'object' && asset !== null && 'width' in asset ? asset.width : undefined;
+            const height = typeof asset === 'object' && asset !== null && 'height' in asset ? asset.height : undefined;
+
+            return (
+              <div
+                key={index}
+                onClick={() => handleImageClick(index)}
+                className="relative group overflow-hidden rounded-sm bg-stone-800 cursor-pointer"
+              >
+                {/* ResponsiveImage is read-only. We pass src, width, and height. */}
+                {/* It's assumed ResponsiveImage internally uses an <img> tag and applies these props. */}
+                <ResponsiveImage
+                  src={src}
+                  alt={getCaption(index)}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  containerClassName="absolute inset-0 w-full h-full"
+                  sizes="(max-width: 640px) 320px, (max-width: 1024px) 640px, (max-width: 1440px) 1024px, 640px"
+                  priority={false}
+                  // Pass width and height to ResponsiveImage component
+                  {...(width && { width })}
+                  {...(height && { height })}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                  <p className="text-white text-xs font-semibold leading-tight">{getCaption(index)}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -172,7 +184,7 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
                 {getCaption(currentImageIndex)}
               </p>
               <p className="text-stone-400 text-xs text-center mt-2 font-medium">
-                Image {currentImageIndex + 1} of {portfolioImages.length}
+                Image {currentImageIndex + 1} of {mappedPortfolioAssets.length}
               </p>
             </div>
           </div>
