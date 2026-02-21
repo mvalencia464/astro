@@ -1,7 +1,7 @@
 import type { ImageMetadata } from 'astro';
 
 // Eagerly glob all portfolio images
-const allPortfolioImages = import.meta.glob<{ default: ImageMetadata }>('../assets/portfolio/*.webp', { eager: true });
+const allPortfolioImages = import.meta.glob<{ default: ImageMetadata }>('../assets/portfolio/**/*.{jpeg,jpg,png,gif,webp}', { eager: true });
 
 // Eagerly glob all testimonial images and videos (assuming ImageMetadata for images, direct path for videos)
 const allTestimonialAssets = import.meta.glob<{ default: ImageMetadata | string }>('../assets/testimonials/**/*.{webp,jpg,png,svg,mp4}', { eager: true });
