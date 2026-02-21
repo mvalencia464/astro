@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets'; // Import Image for favicon
 import '../styles/globals.css';
-import favicon from '../assets/favicon.ico'; // Import the favicon
+import favicon from '../assets/favicon.svg'; // Import the favicon
 
 interface Props {
   title: string;
@@ -28,7 +28,7 @@ const {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Oswald:wght@400;500;700&family=Caveat:wght@400;700&display=swap" rel="stylesheet" />
     
-    <link rel="icon" type="image/x-icon" href={favicon.src} />
+    <link rel="icon" type="image/svg+xml" href={favicon.src} />
     
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-RD2XZW9K8V"></script>
     <script is:inline>
