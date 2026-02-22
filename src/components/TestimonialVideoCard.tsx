@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Play } from 'lucide-react';
+import { mapAssetUrl } from '../utils/assetMapper'; // Import mapAssetUrl
+import ResponsiveImage from './ResponsiveImage'; // Import ResponsiveImage for thumbnail
+import type { ImageMetadata } from 'astro'; // Import ImageMetadata type
 
 interface TestimonialVideoCardProps {
   videoUrl: string;
@@ -24,8 +27,19 @@ export default function TestimonialVideoCard({
 }: TestimonialVideoCardProps) {
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // For thumbnail, use the URL directly (already in public folder)
-  const thumbnailSrc = videoThumbnailUrl || thumbnailUrl || '';
+  // Use mapAssetUrl to get the thumbnail asset (ImageMetadata object or string URL)
+  const mappedThumbnailAsset = mapAssetUrl(videoThumbnailUrl || thumbnailUrl || '');
+
+  // Extract src, width, height from the mapped thumbnail asset
+  const thumbnailSrc = typeof mappedThumbnailAsset === 'object' && mappedThumbnailAsset !== null && 'src' in mappedThumbnailAsset
+    ? mappedThumbnailAsset.src
+    : (mappedThumbnailAsset as string || '');
+  const thumbnailWidth = typeof mappedThumbnailAsset === 'object' && mappedThumbnailAsset !== null && 'width' in mappedThumbnailAsset
+    ? mappedThumbnailAsset.width
+    : undefined;
+  const thumbnailHeight = typeof mappedThumbnailAsset === 'object' && mappedThumbnailAsset !== null && 'height' in mappedThumbnailAsset
+    ? mappedThumbnailAsset.height
+    : undefined;
 
   const handlePlayClick = () => {
     setIsPlaying(true);
@@ -36,9 +50,11 @@ export default function TestimonialVideoCard({
     return null;
   }
 
-  // For videos, use the videoUrl directly without mapping through assetMapper
-  // Videos are served from the public assets folder and don't need optimization
-  const finalVideoSrc = videoUrl;
+  // Process videoUrl through mapAssetUrl to handle local assets or external URLs
+  const videoAsset = mapAssetUrl(videoUrl);
+  const finalVideoSrc = typeof videoAsset === 'object' && videoAsset !== null && 'src' in videoAsset
+    ? videoAsset.src
+    : (videoAsset as string || '');
 
 
   return (
@@ -47,10 +63,14 @@ export default function TestimonialVideoCard({
       {!isPlaying ? (
         <div className="w-full aspect-[9/16] cursor-pointer relative group" onClick={handlePlayClick}>
           {thumbnailSrc ? (
-            <img
+            <ResponsiveImage
               src={thumbnailSrc}
               alt={`${author} testimonial video thumbnail`}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              containerClassName="absolute inset-0"
+              width={thumbnailWidth}
+              height={thumbnailHeight}
+              priority={false} // Thumbnails are usually not priority
             />
           ) : (
             <div className="w-full h-full bg-orange-600 flex items-center justify-center text-white text-sm">
