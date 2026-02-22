@@ -50,6 +50,13 @@ export default function TestimonialVideoCard({
     return null;
   }
 
+  // Process videoUrl through mapAssetUrl to handle local assets or external URLs
+  const mappedVideoAsset = mapAssetUrl(videoUrl);
+  const finalVideoSrc = typeof mappedVideoAsset === 'object' && mappedVideoAsset !== null && 'src' in mappedVideoAsset
+    ? mappedVideoAsset.src
+    : (mappedVideoAsset as string || '');
+
+
   return (
     <div className="break-inside-avoid mb-4">
       {/* Video Card - Show thumbnail when not playing */}
@@ -80,7 +87,7 @@ export default function TestimonialVideoCard({
         <div className="relative w-full bg-black overflow-hidden">
           <div className="relative w-full aspect-[9/16] bg-black flex items-center justify-center">
             <video
-              src={videoUrl}
+              src={finalVideoSrc} // Use the processed video source here
               controls
               autoPlay
               className="w-full h-full"
