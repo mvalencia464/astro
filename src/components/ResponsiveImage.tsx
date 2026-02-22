@@ -87,9 +87,6 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
         onLoad={() => { setIsLoading(false); console.log('IMAGE LOADED:', src); }}
         onError={() => { setIsLoading(false); setHasError(true); console.error('IMAGE ERROR:', src); }}
       />
-      {isLoading && !priority && ( // Only show pulse if not a priority image and still loading
-        <div className="absolute inset-0 bg-stone-800 animate-pulse" />
-      )}
       {hasError && (
         <div className="absolute inset-0 bg-stone-800 flex items-center justify-center">
           <span className="text-stone-600 text-xs">Image unavailable</span>
