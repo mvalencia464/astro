@@ -39,22 +39,17 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    setIsLoading(priority ? false : true);
+    setIsLoading(priority ? false : true); // Re-initialize loading state on src/priority change
     setHasError(false);
-
-    const img = imgRef.current;
-    if (img && img.complete) {
-      setIsLoading(false);
-      onLoad?.();
-    }
+    // Removed imgRef.current.complete check from here to rely solely on onLoad / onError for state update.
+    // This avoids potential race conditions with cached images.
   }, [src, priority, onLoad]);
 
   // Generate responsive srcset with available image variants
-  const generateSrcSet = (imagePath: any): string | undefined => {
-    // If Astro passed an object (Astro 6 feature), extract the src string; otherwise use as-is
-    const path = typeof imagePath === 'string' ? imagePath : imagePath?.src;
+  const generateSrcSet = (imagePath: string): string | undefined => { // `imagePath` is expected to be a string based on `src` prop type
+    const path = imagePath; // `src` prop is always a string, so simplify this assignment.
 
-    if (!path || typeof path !== 'string') return undefined;
+    if (!path) return undefined;
 
     // Extract base path without extension
     const basePath = path.replace(/\.[^/.]+$/, '');
