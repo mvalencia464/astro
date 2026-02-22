@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { Play } from 'lucide-react'; // X is not used in this component, removed for cleaner imports
-import { mapAssetUrl } from '../utils/assetMapper';
-import ResponsiveImage from './ResponsiveImage'; // Import ResponsiveImage component
-import type { ImageMetadata } from 'astro'; // Import ImageMetadata type for asset handling
+import { Play } from 'lucide-react';
 
 interface TestimonialVideoCardProps {
   videoUrl: string;
@@ -27,19 +24,8 @@ export default function TestimonialVideoCard({
 }: TestimonialVideoCardProps) {
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Use mapAssetUrl to get the thumbnail asset (ImageMetadata object or string URL)
-  const mappedThumbnailAsset = mapAssetUrl(videoThumbnailUrl || thumbnailUrl || '');
-
-  // Extract src, width, height from the mapped asset
-  const thumbnailSrc = typeof mappedThumbnailAsset === 'object' && mappedThumbnailAsset !== null && 'src' in mappedThumbnailAsset
-    ? mappedThumbnailAsset.src
-    : (mappedThumbnailAsset as string || '');
-  const thumbnailWidth = typeof mappedThumbnailAsset === 'object' && mappedThumbnailAsset !== null && 'width' in mappedThumbnailAsset
-    ? mappedThumbnailAsset.width
-    : undefined;
-  const thumbnailHeight = typeof mappedThumbnailAsset === 'object' && mappedThumbnailAsset !== null && 'height' in mappedThumbnailAsset
-    ? mappedThumbnailAsset.height
-    : undefined;
+  // For thumbnail, use the URL directly (already in public folder)
+  const thumbnailSrc = videoThumbnailUrl || thumbnailUrl || '';
 
   const handlePlayClick = () => {
     setIsPlaying(true);
@@ -50,11 +36,9 @@ export default function TestimonialVideoCard({
     return null;
   }
 
-  // Process videoUrl through mapAssetUrl to handle local assets or external URLs
-  const mappedVideoAsset = mapAssetUrl(videoUrl);
-  const finalVideoSrc = typeof mappedVideoAsset === 'object' && mappedVideoAsset !== null && 'src' in mappedVideoAsset
-    ? mappedVideoAsset.src
-    : (mappedVideoAsset as string || '');
+  // For videos, use the videoUrl directly without mapping through assetMapper
+  // Videos are served from the public assets folder and don't need optimization
+  const finalVideoSrc = videoUrl;
 
 
   return (
@@ -63,14 +47,10 @@ export default function TestimonialVideoCard({
       {!isPlaying ? (
         <div className="w-full aspect-[9/16] cursor-pointer relative group" onClick={handlePlayClick}>
           {thumbnailSrc ? (
-            <ResponsiveImage
+            <img
               src={thumbnailSrc}
               alt={`${author} testimonial video thumbnail`}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              containerClassName="absolute inset-0"
-              width={thumbnailWidth}
-              height={thumbnailHeight}
-              priority={false} // Thumbnails are usually not priority
             />
           ) : (
             <div className="w-full h-full bg-orange-600 flex items-center justify-center text-white text-sm">
