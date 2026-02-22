@@ -1791,8 +1791,18 @@
       "rating": 5,
       "source": "Video Testimonial",
       "avatarUrl": "/assets/testimonials/videos/erica-leman-thumb.webp",
-      "videoUrl": "/assets/testimonials/videos/erica-leman.mp4",
-      "videoThumbnailUrl": "/assets/testimonials/videos/erica-leman-thumb.webp"
+      "videoUrl": "testimonials/videos/erica-leman.mp4",
+      "videoThumbnailUrl": "testimonials/videos/erica-leman-thumb.webp"
+    },
+    {
+      "date": "2026-02-18 00:00:01",
+      "text": "Deck Masters has been incredible to work with! They transformed our outdoor space beautifully. The team was professional, attentive to every detail, and delivered exceptional results. I highly recommend them!",
+      "author": "Erica Leman (New)",
+      "rating": 5,
+      "source": "Video Testimonial",
+      "avatarUrl": "testimonials/videos/erica-leman-thumb.webp",
+      "videoUrl": "testimonials/videos/erica-leman.mp4",
+      "videoThumbnailUrl": "testimonials/videos/erica-leman-thumb.webp"
     }
   ],
   "websiteUrl": "https://deckmastersak.com/",
