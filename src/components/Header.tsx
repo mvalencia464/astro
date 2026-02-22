@@ -42,11 +42,11 @@ export default function Header() {
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-4">
           <a
-            href="tel:+19075551234"
+            href="tel:+19078918283"
             className="flex items-center gap-2 text-stone-400 hover:text-orange-500 transition-colors"
           >
             <Phone className="w-4 h-4" />
-            <span className="font-bold text-xs uppercase tracking-wider">(907) 555-1234</span>
+            <span className="font-bold text-xs uppercase tracking-wider">(907) 891-8283</span>
           </a>
           <button className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 font-display font-bold uppercase tracking-widest transition-colors flex items-center gap-2">
             Get Quote
@@ -79,11 +79,11 @@ export default function Header() {
             ))}
             <hr className="border-stone-800 my-2" />
             <a
-              href="tel:+19075551234"
+              href="tel:+19078918283"
               className="flex items-center gap-2 text-orange-500 font-bold uppercase text-xs tracking-widest py-2"
             >
               <Phone className="w-4 h-4" />
-              (907) 555-1234
+              (907) 891-8283
             </a>
             <button className="w-full bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 font-display font-bold uppercase tracking-widest transition-colors flex items-center justify-center gap-2 mt-2">
               Get Quote

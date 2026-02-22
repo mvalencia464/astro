@@ -5,12 +5,11 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Phone, X } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import { analytics } from '../utils/analyticsTracker';
 
 export const StickyMobileCTA: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isDismissed, setIsDismissed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -28,7 +27,7 @@ export const StickyMobileCTA: React.FC = () => {
   useEffect(() => {
     // Show CTA after user scrolls down a bit
     const handleScroll = () => {
-      if (window.scrollY > 300 && isMobile && !isDismissed) {
+      if (window.scrollY > 300 && isMobile) {
         setIsVisible(true);
       } else if (window.scrollY <= 300) {
         setIsVisible(false);
@@ -39,49 +38,21 @@ export const StickyMobileCTA: React.FC = () => {
       window.addEventListener('scroll', handleScroll);
       return () => window.removeEventListener('scroll', handleScroll);
     }
-  }, [isMobile, isDismissed]);
+  }, [isMobile]);
 
-  const handleCtaClick = () => {
-    analytics.trackStickyCTAClick();
-    // Scroll to quote form
-    const quoteForm = document.getElementById('quote-form');
-    if (quoteForm) {
-      quoteForm.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const handleDismiss = () => {
-    setIsDismissed(true);
-    setIsVisible(false);
-  };
-
-  if (!isMobile || isDismissed || !isVisible) {
+  if (!isMobile || !isVisible) {
     return null;
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-orange-600 to-orange-500 shadow-lg md:hidden">
-      <div className="px-4 py-3 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2 flex-1">
-          <Phone className="w-5 h-5 text-white flex-shrink-0" />
-          <span className="text-white font-semibold text-sm">Ready to transform your deck?</span>
-        </div>
-        
-        <button
-          onClick={handleCtaClick}
-          className="bg-stone-900 text-white px-4 py-2 rounded-md font-semibold text-sm whitespace-nowrap hover:bg-stone-800 transition-colors flex-shrink-0"
-        >
-          Get My Quote
-        </button>
-
-        <button
-          onClick={handleDismiss}
-          className="text-white hover:text-stone-100 transition-colors flex-shrink-0"
-          aria-label="Dismiss"
-        >
-          <X className="w-5 h-5" />
-        </button>
-      </div>
+    <div className="fixed bottom-0 left-0 right-0 z-40 bg-orange-600 shadow-lg md:hidden">
+      <a 
+        href="tel:+19078918283"
+        className="block px-4 py-4 flex items-center justify-center gap-3 hover:bg-orange-700 transition-colors"
+      >
+        <Phone className="w-6 h-6 text-white flex-shrink-0" />
+        <span className="text-white font-bold text-lg uppercase tracking-wider">CALL 907.891.8283</span>
+      </a>
     </div>
   );
 };

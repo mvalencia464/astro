@@ -1,5 +1,5 @@
 import React from 'react';
-import { X } from 'lucide-react';
+import { X, Phone } from 'lucide-react';
 
 const MobileMenu = React.memo(({ isOpen, onClose, navigate, openQuoteForm, pages }) => {
   return (
@@ -59,10 +59,17 @@ const MobileMenu = React.memo(({ isOpen, onClose, navigate, openQuoteForm, pages
         </div>
 
         {/* Sticky Bottom CTA */}
-        <div className="p-6 border-t border-white/5 bg-stone-950">
+        <div className="border-t border-white/5 bg-stone-950">
+          <a
+            href="tel:+19078918283"
+            className="flex items-center justify-center gap-3 px-6 py-4 border-b border-white/5 hover:bg-stone-900 transition-colors"
+          >
+            <Phone className="w-5 h-5 text-white" />
+            <span className="text-white font-bold uppercase tracking-widest">CALL 907.891.8283</span>
+          </a>
           <button
             onClick={() => { openQuoteForm(); onClose(); }}
-            className="w-full bg-orange-600 text-white py-4 font-bold uppercase tracking-widest hover:bg-orange-700 transition-colors"
+            className="w-full px-6 py-4 bg-orange-600 text-white font-bold uppercase tracking-widest hover:bg-orange-700 transition-colors"
           >
             Get Free Quote
           </button>
