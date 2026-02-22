@@ -3,6 +3,8 @@ import { Project } from '../../types/portfolio';
 import BeforeAfterSlider from './BeforeAfterSlider';
 import QuoteForm from '../QuoteForm';
 import ResponsiveImage from '../ResponsiveImage';
+import { mapAssetUrl } from '../../utils/assetMapper'; // Import mapAssetUrl
+import type { ImageMetadata } from 'astro'; // Import ImageMetadata type
 
 interface ProjectModalProps {
   project: Project | null;
@@ -111,33 +113,48 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose, onOpenQuo
                       <span className="text-[10px] font-bold text-orange-600 uppercase tracking-widest">Click to expand</span>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                      {project.gallery.map((img, idx) => (
-                        <div
-                           key={idx}
-                           className="group relative rounded-sm overflow-hidden aspect-video shadow-md cursor-pointer bg-stone-800"
-                           onClick={() => setSelectedGalleryIndex(idx)}
-                         >
-                           <ResponsiveImage
-                             src={img.url}
-                             alt={img.label}
-                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
-                             sizes="(max-width: 640px) 320px, (max-width: 1024px) 640px, 1024px"
-                             priority={false}
-                           />
-                          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <svg className="w-8 h-8 text-white scale-75 group-hover:scale-100 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                            </svg>
-                          </div>
-                          {img.label && (
-                            <div className="absolute bottom-4 left-4 right-4">
-                              <span className="text-[10px] text-white/90 font-bold uppercase tracking-widest bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                                {img.label}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                      {project.gallery.map((img, idx) => {
+                         const mappedAsset = mapAssetUrl(img.url);
+                         const src = typeof mappedAsset === 'object' && mappedAsset !== null && 'src' in mappedAsset
+                           ? mappedAsset.src
+                           : (mappedAsset as string || '');
+                         const width = typeof mappedAsset === 'object' && mappedAsset !== null && 'width' in mappedAsset
+                           ? mappedAsset.width
+                           : undefined;
+                         const height = typeof mappedAsset === 'object' && mappedAsset !== null && 'height' in mappedAsset
+                           ? mappedAsset.height
+                           : undefined;
+
+                         return (
+                           <div
+                              key={idx}
+                              className="group relative rounded-sm overflow-hidden aspect-video shadow-md cursor-pointer bg-stone-800"
+                              onClick={() => setSelectedGalleryIndex(idx)}
+                            >
+                              <ResponsiveImage
+                                src={src}
+                                alt={img.label || `Project gallery image ${idx + 1}`}
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
+                                sizes="(max-width: 640px) 320px, (max-width: 1024px) 640px, 1024px"
+                                priority={false}
+                                width={width}
+                                height={height}
+                              />
+                             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                               <svg className="w-8 h-8 text-white scale-75 group-hover:scale-100 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                               </svg>
+                             </div>
+                             {img.label && (
+                               <div className="absolute bottom-4 left-4 right-4">
+                                 <span className="text-[10px] text-white/90 font-bold uppercase tracking-widest bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                                   {img.label}
+                                 </span>
+                               </div>
+                             )}
+                           </div>
+                         );
+                      })}
                     </div>
                   </div>
                 )}
@@ -233,12 +250,31 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose, onOpenQuo
               <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9 5l7 7-7 7" /></svg>
             </button>
 
-            <ResponsiveImage
-               src={project.gallery[selectedGalleryIndex].url}
-               alt={project.gallery[selectedGalleryIndex].label}
-               className="w-full h-full object-contain select-none animate-in zoom-in-95 duration-500"
-               priority={true}
-             />
+            {/* Main image in lightbox */}
+            {(() => {
+              const currentImage = project.gallery[selectedGalleryIndex];
+              const mappedAsset = mapAssetUrl(currentImage.url);
+              const src = typeof mappedAsset === 'object' && mappedAsset !== null && 'src' in mappedAsset
+                ? mappedAsset.src
+                : (mappedAsset as string || '');
+              const width = typeof mappedAsset === 'object' && mappedAsset !== null && 'width' in mappedAsset
+                ? mappedAsset.width
+                : undefined;
+              const height = typeof mappedAsset === 'object' && mappedAsset !== null && 'height' in mappedAsset
+                ? mappedAsset.height
+                : undefined;
+
+              return (
+                <ResponsiveImage
+                   src={src}
+                   alt={currentImage.label || `Project gallery image ${selectedGalleryIndex + 1}`}
+                   className="w-full h-full object-contain select-none animate-in zoom-in-95 duration-500"
+                   priority={true}
+                   width={width}
+                   height={height}
+                 />
+              );
+            })()}
           </div>
 
           {/* Bottom Controls / Indicator */}
