@@ -32,7 +32,7 @@ export function mapAssetUrl(url: string): ImageMetadata | string | undefined {
 
   // Handle video paths directly from public directory
   if (url.startsWith('testimonials/videos/')) {
-    return `/assets/testimonials/${url}`;
+    return `/assets/${url}`;
   }
 
   // Strip public-style prefix if present
