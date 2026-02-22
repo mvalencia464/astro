@@ -10,7 +10,7 @@ export default defineConfig({
         protocol: 'https',
         hostname: 'images.stokeleads.com',
         port: undefined,
-        pathname: '**',
+        pathname: '/**',
       },
     ],
   },
