@@ -51,16 +51,16 @@ export function mapAssetUrl(url: string): ImageMetadata | string | undefined {
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
   }
-  
+
   let relativePath = url;
   // If the URL starts with '/assets/', strip it to get the path relative to src/assets/
   if (url.startsWith('/assets/')) {
     relativePath = url.substring('/assets/'.length);
   }
-  
+
   // Attempt to find metadata for the relative path
   const metadata = getAssetMetadataByPath(relativePath);
-  
+
   // Return the metadata object (ImageMetadata or string for video)
   if (metadata) {
     return metadata;
