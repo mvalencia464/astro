@@ -1,0 +1,129 @@
+---
+import { Image } from 'astro:assets';
+import { mapAssetUrl } from '../utils/assetMapper';
+
+const videoRawPath = 'testimonials/videos/erica-leman.mp4';
+const thumbnailRawPath = 'testimonials/videos/erica-leman-thumb.webp';
+
+const videoAsset = mapAssetUrl(videoRawPath);
+const thumbnailAsset = mapAssetUrl(thumbnailRawPath);
+
+const finalVideoSrc = typeof videoAsset === 'object' && videoAsset !== null && 'src' in videoAsset
+  ? videoAsset.src
+  : (videoAsset as string || '');
+
+const finalThumbnailSrc = typeof thumbnailAsset === 'object' && thumbnailAsset !== null && 'src' in thumbnailAsset
+  ? thumbnailAsset.src
+  : (thumbnailAsset as string || '');
+
+const thumbnailWidth = typeof thumbnailAsset === 'object' && thumbnailAsset !== null && 'width' in thumbnailAsset
+  ? thumbnailAsset.width
+  : undefined;
+const thumbnailHeight = typeof thumbnailAsset === 'object' && thumbnailAsset !== null && 'height' in thumbnailAsset
+  ? thumbnailAsset.height
+  : undefined;
+---
+
+<section id="beta-section" class="py-16 bg-stone-900 text-white relative overflow-hidden">
+  <div class="container mx-auto px-6 text-center mb-12">
+    <h2 class="text-3xl md:text-5xl font-display font-bold uppercase leading-tight">
+      Explore Our Beta Feature
+    </h2>
+    <p class="text-stone-400 text-lg mt-4 max-w-2xl mx-auto">
+      Get a sneak peek at upcoming functionalities and content.
+    </p>
+  </div>
+
+  <div class="flex justify-center px-6">
+    <div
+      class="relative w-full max-w-sm aspect-[9/16] bg-stone-800 rounded-lg overflow-hidden shadow-xl"
+      id="video-player-wrapper"
+      data-video-src={finalVideoSrc}
+      data-thumbnail-src={finalThumbnailSrc}
+    >
+      {/* Thumbnail Image */}
+      <Image
+        src={finalThumbnailSrc}
+        alt="Erica Leman Testimonial Thumbnail"
+        class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+        width={thumbnailWidth}
+        height={thumbnailHeight}
+        loading="eager"
+      />
+      
+      {/* Play Button Overlay */}
+      <button
+        class="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/60 transition-colors z-10"
+        id="play-button"
+        aria-label="Play video"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="96"
+          height="96"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-white/90"
+        >
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+      </button>
+
+      {/* Video Element */}
+      <video
+        class="absolute inset-0 w-full h-full object-cover hidden"
+        controls
+        preload="metadata"
+        muted
+        playsinline
+        id="beta-video"
+      ></video>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const wrapper = document.getElementById('video-player-wrapper');
+    const playButton = document.getElementById('play-button');
+    const videoElement = document.getElementById('beta-video');
+    const thumbnailImage = wrapper?.querySelector('img');
+
+    if (wrapper && playButton && videoElement && thumbnailImage) {
+      const videoSrc = wrapper.dataset.videoSrc;
+
+      playButton.addEventListener('click', () => {
+        if (videoSrc) {
+          videoElement.src = videoSrc;
+          videoElement.classList.remove('hidden'); // Show video
+          thumbnailImage.classList.add('hidden'); // Hide thumbnail
+          playButton.classList.add('hidden'); // Hide play button
+
+          // Attempt to play the video. Catch potential errors from autoplay policies.
+          const playPromise = (videoElement as HTMLVideoElement).play();
+          if (playPromise !== undefined) {
+            playPromise.catch(error => {
+              console.error('Video autoplay failed:', error);
+              // Fallback: If autoplay is blocked, just show controls so user can manually play
+              videoElement.removeAttribute('autoplay'); // Ensure no autoplay issues
+              videoElement.setAttribute('controls', ''); // Ensure controls are visible
+            });
+          }
+        }
+      });
+
+      // Optional: Reset when video ends
+      videoElement.addEventListener('ended', () => {
+        videoElement.classList.add('hidden');
+        thumbnailImage.classList.remove('hidden');
+        playButton.classList.remove('hidden');
+        videoElement.src = ''; // Clear src to prevent re-buffering
+        videoElement.load(); // Reload video to reset state for next play
+      });
+    }
+  });
+</script>
