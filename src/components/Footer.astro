@@ -1,98 +1,337 @@
 ---
-import { Phone, Mail, MapPin, ArrowRight } from 'lucide-react';
 ---
 
-<footer class="bg-stone-950 border-t border-stone-800">
-  <!-- Main Footer Content -->
-  <div class="container mx-auto px-6 py-16">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-      <!-- Company Info -->
-      <div class="col-span-1">
-        <div class="text-2xl font-bold font-display text-white uppercase tracking-tighter mb-6">
-          Deck<span class="text-orange-600">Masters</span>
-        </div>
-        <p class="text-stone-500 text-sm leading-relaxed mb-6">
-          Anchorage's premium deck builder. Expert craftsmanship, transparent pricing, and frost-proof engineering for Alaska winters.
+<style>
+  .gradient-border-top {
+    background: linear-gradient(to right, transparent, #92400e, transparent);
+    height: 1px;
+  }
+
+  .form-input {
+    width: 100%;
+    background-color: #0c0a09;
+    border: 1px solid #292423;
+    padding: 1rem;
+    color: white;
+    font-weight: bold;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    transition: all 0.3s;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #ea580c;
+  }
+
+  .form-input::placeholder {
+    color: #57534e;
+  }
+
+  .btn-primary {
+    width: 100%;
+    background-color: #ea580c;
+    color: white;
+    padding: 1.25rem;
+    border: none;
+    border-radius: 0;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-primary:hover {
+    background-color: #f97316;
+  }
+
+  .checkbox-custom {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.125rem;
+    border: 1px solid rgba(234, 88, 12, 0.5);
+    background-color: #0c0a09;
+    cursor: pointer;
+    accent-color: #ea580c;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+</style>
+
+<footer class="bg-stone-950 pt-32 pb-12 relative overflow-hidden">
+  <!-- Gradient border top -->
+  <div class="absolute top-0 left-0 w-full gradient-border-top"></div>
+
+  <div class="container mx-auto px-6 relative z-10 max-w-6xl">
+    <!-- Main Footer Content -->
+    <div class="flex flex-col lg:flex-row justify-between gap-20 mb-24">
+      <!-- Left Section: Ready to Build + Contact Info + Map -->
+      <div class="lg:w-1/2">
+        <h2 class="text-6xl md:text-8xl font-display font-bold uppercase leading-tight mb-12">
+          Ready to <br /> <span class="text-orange-600">Build?</span>
+        </h2>
+        <p class="text-xl text-stone-400 max-w-md mb-12">
+          Schedule your complimentary design consultation today. Let's discuss how to elevate your property value and lifestyle.
         </p>
-        <div class="flex gap-4">
-          <a href="#" class="text-stone-500 hover:text-orange-500 transition-colors">Facebook</a>
-          <a href="#" class="text-stone-500 hover:text-orange-500 transition-colors">Instagram</a>
-          <a href="#" class="text-stone-500 hover:text-orange-500 transition-colors">Google</a>
+
+        <!-- Contact Information -->
+        <div class="flex flex-col gap-6 mb-12">
+          <div class="flex items-center gap-4 text-lg">
+            <div class="w-10 h-10 bg-stone-900 flex items-center justify-center rounded-full text-orange-500 shrink-0">
+              <i class="fas fa-phone"></i>
+            </div>
+            <span class="font-bold tracking-wider">(907) 782-4043</span>
+          </div>
+          <div class="flex items-center gap-4 text-base md:text-lg">
+            <div class="w-10 h-10 bg-stone-900 flex items-center justify-center rounded-full text-orange-500 shrink-0">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <span class="font-bold tracking-wide break-all">CONTACT@DECKMASTERSAK.COM</span>
+          </div>
+          <div class="flex items-center gap-4 text-lg">
+            <div class="w-10 h-10 bg-stone-900 flex items-center justify-center rounded-full text-orange-500 shrink-0">
+              <i class="fas fa-map-pin"></i>
+            </div>
+            <span class="font-bold tracking-wider">625 W 59TH AVE UNIT J, ANCHORAGE, AK 99518</span>
+          </div>
+          <div class="flex items-center gap-4 text-lg">
+            <div class="w-10 h-10 bg-stone-900 flex items-center justify-center rounded-full text-orange-500 shrink-0">
+              <i class="fas fa-clock"></i>
+            </div>
+            <span class="font-bold tracking-wider">7:30 AM - 7:00 PM, SUN - SAT</span>
+          </div>
+        </div>
+
+        <!-- Google Maps Embed -->
+        <div class="w-full rounded-sm overflow-hidden border border-stone-800 relative group">
+          <div class="w-full h-64 relative">
+            <iframe
+              title="Deck Masters location in Anchorage, Alaska on Google Maps"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2853.5566334411346!2d-149.8942242!3d61.1676417!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x56c891cae1357399%3A0xd7b37a2095289a27!2sDeck%20Masters%20AK!5e1!3m2!1sen!2sus!4v1763737932256!5m2!1sen!2sus"
+              width="100%"
+              height="100%"
+              style="border: 0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+          <div class="bg-stone-900 p-4 flex justify-between items-center border-t border-stone-800">
+            <div class="flex items-center gap-2">
+              <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_92x30dp.png" alt="Google" class="h-5 opacity-80" />
+              <span class="text-xs font-bold uppercase tracking-wider text-stone-400">Business Profile</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white">4.9</span>
+              <div class="flex text-orange-500">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <span class="text-xs text-stone-500">(120 Reviews)</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Quick Links -->
-      <div class="col-span-1">
-        <h3 class="font-bold uppercase tracking-widest text-sm mb-6 text-white">Navigation</h3>
-        <ul class="space-y-3">
-          <li><a href="/" class="text-stone-500 hover:text-white transition-colors text-sm">Home</a></li>
-          <li><a href="#portfolio" class="text-stone-500 hover:text-white transition-colors text-sm">Portfolio</a></li>
-          <li><a href="#reviews" class="text-stone-500 hover:text-white transition-colors text-sm">Reviews</a></li>
-          <li><a href="#process" class="text-stone-500 hover:text-white transition-colors text-sm">Process</a></li>
-          <li><a href="#services" class="text-stone-500 hover:text-white transition-colors text-sm">Services</a></li>
-        </ul>
-      </div>
+      <!-- Right Section: Quote Form + Testimonials -->
+      <div class="lg:w-1/2">
+        <!-- Quote Form -->
+        <div class="bg-stone-900 border border-orange-600/30 p-8 rounded-sm w-full shadow-2xl animate-fade-in-up">
+          <div class="mb-8 border-b border-orange-600/10 pb-6 text-center">
+            <h3 class="text-2xl font-display font-bold uppercase mb-2">Request Estimate</h3>
+            <p class="text-stone-500 text-xs uppercase tracking-widest font-bold">The No-Surprise Guarantee</p>
+          </div>
 
-      <!-- Services -->
-      <div class="col-span-1">
-        <h3 class="font-bold uppercase tracking-widest text-sm mb-6 text-white">Services</h3>
-        <ul class="space-y-3">
-          <li><a href="#" class="text-stone-500 hover:text-white transition-colors text-sm">Composite Decks</a></li>
-          <li><a href="#" class="text-stone-500 hover:text-white transition-colors text-sm">Cedar Decks</a></li>
-          <li><a href="#" class="text-stone-500 hover:text-white transition-colors text-sm">Repairs & Maintenance</a></li>
-          <li><a href="#" class="text-stone-500 hover:text-white transition-colors text-sm">Custom Design</a></li>
-        </ul>
-      </div>
+          <form id="quoteForm" class="space-y-3">
+            <!-- Form Fields -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <input type="text" name="name" class="form-input" placeholder="Full Name*" required />
+                <p class="error-message text-red-600 text-xs mt-1" style="display:none;"></p>
+              </div>
+              <div>
+                <input type="tel" name="phone" class="form-input" placeholder="Phone Number*" required />
+                <p class="error-message text-red-600 text-xs mt-1" style="display:none;"></p>
+              </div>
+            </div>
 
-      <!-- Contact -->
-      <div class="col-span-1">
-        <h3 class="font-bold uppercase tracking-widest text-sm mb-6 text-white">Contact</h3>
-        <ul class="space-y-4">
-          <li class="flex items-start gap-3">
-            <Phone class="w-4 h-4 text-orange-600 mt-1 shrink-0" />
             <div>
-              <a href="tel:+19075551234" class="text-stone-400 hover:text-white transition-colors text-sm font-bold">(907) 555-1234</a>
+              <input type="email" name="email" class="form-input" placeholder="Email Address*" required />
+              <p class="error-message text-red-600 text-xs mt-1" style="display:none;"></p>
             </div>
-          </li>
-          <li class="flex items-start gap-3">
-            <Mail class="w-4 h-4 text-orange-600 mt-1 shrink-0" />
+
             <div>
-              <a href="mailto:info@deckmasters.com" class="text-stone-400 hover:text-white transition-colors text-sm font-bold">info@deckmasters.com</a>
+              <input type="text" name="address" class="form-input" placeholder="Property Address (Start Typing)*" required />
+              <p class="error-message text-red-600 text-xs mt-1" style="display:none;"></p>
             </div>
-          </li>
-          <li class="flex items-start gap-3">
-            <MapPin class="w-4 h-4 text-orange-600 mt-1 shrink-0" />
-            <div>
-              <p class="text-stone-400 text-sm">Anchorage, Alaska<br />Serving South Anchorage, Hillside & Eagle River</p>
+
+            <!-- Consent Checkboxes -->
+            <div class="pt-2 border-t border-orange-600/10 space-y-2">
+              <label class="flex gap-3 cursor-pointer group">
+                <input type="checkbox" name="consent" class="checkbox-custom mt-0.5" required />
+                <span class="text-xs text-stone-500 leading-snug uppercase tracking-wider">
+                  By checking this box I agree to Deck Masters' <a href="#" class="text-orange-600 hover:underline font-bold">Terms</a> &amp; <a href="#" class="text-orange-600 hover:underline font-bold">Privacy Policy</a> and consent to receive SMS messages about my project. Msg &amp; data rates may apply. Reply STOP to opt out. *
+                </span>
+              </label>
+
+              <label class="flex gap-3 cursor-pointer group">
+                <input type="checkbox" name="marketingConsent" class="checkbox-custom mt-0.5" required />
+                <span class="text-xs text-stone-500 leading-snug uppercase tracking-wider">
+                  I consent to receive recurring automated marketing texts (promos, offers) from Deck Masters. Consent is not required to purchase. Msg frequency varies. Msg &amp; data rates may apply. Reply STOP to cancel. *
+                </span>
+              </label>
             </div>
-          </li>
-        </ul>
+
+            <!-- Turnstile Widget Placeholder -->
+            <div class="flex justify-center py-2">
+              <p class="text-xs text-stone-500">
+                [Cloudflare Turnstile Widget - Replace with your implementation]
+              </p>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-primary">
+              Check Availability & Get Quote
+              <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+          </form>
+
+          <p class="text-xs text-stone-600 text-center uppercase tracking-widest font-bold mt-4">
+            Free Consultation • No Obligation • Locally Owned
+          </p>
+        </div>
+
+        <!-- Footer Testimonials Carousel -->
+        <div class="mt-8 h-24 flex flex-col justify-center">
+          <div class="testimonial-slide">
+            <p class="text-stone-300 font-light italic text-lg leading-relaxed mb-2">
+              "From the initial consultation to the final product... Jordan gave us great recommendations."
+            </p>
+            <div class="flex items-center gap-2">
+              <div class="h-px w-8 bg-orange-600"></div>
+              <span class="text-stone-500 text-xs font-bold uppercase tracking-widest">Anton Szender</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Divider -->
-    <div class="border-t border-stone-800 py-8 flex flex-col md:flex-row justify-between items-center gap-6">
-      <p class="text-stone-600 text-xs uppercase tracking-widest">
-        © 2024 Deck Masters AK. All rights reserved.
-      </p>
-      <div class="flex gap-6">
-        <a href="/privacy" class="text-stone-600 hover:text-stone-400 text-xs uppercase tracking-widest transition-colors">Privacy Policy</a>
-        <a href="/terms" class="text-stone-600 hover:text-stone-400 text-xs uppercase tracking-widest transition-colors">Terms of Service</a>
+    <!-- SEO Sitemap Section -->
+    <div class="border-t border-stone-900 py-12">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h4 class="text-stone-300 font-bold uppercase text-xs mb-4 tracking-widest">Services</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-stone-500 hover:text-stone-300 text-xs uppercase">Composite Decking</a></li>
+            <li><a href="#" class="text-stone-500 hover:text-stone-300 text-xs uppercase">Hardwood Decks</a></li>
+            <li><a href="#" class="text-stone-500 hover:text-stone-300 text-xs uppercase">Outdoor Living</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-stone-300 font-bold uppercase text-xs mb-4 tracking-widest">Company</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-stone-500 hover:text-stone-300 text-xs uppercase">About Us</a></li>
+            <li><a href="#" class="text-stone-500 hover:text-stone-300 text-xs uppercase">Our Process</a></li>
+            <li><a href="#" class="text-stone-500 hover:text-stone-300 text-xs uppercase">Portfolio</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-stone-300 font-bold uppercase text-xs mb-4 tracking-widest">Neighborhoods</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-stone-500 hover:text-stone-300 text-xs uppercase">Anchorage</a></li>
+            <li><a href="#" class="text-stone-500 hover:text-stone-300 text-xs uppercase">Eagle River</a></li>
+            <li><a href="#" class="text-stone-500 hover:text-stone-300 text-xs uppercase">Girdwood</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-stone-300 font-bold uppercase text-xs mb-4 tracking-widest">Legal</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-stone-500 hover:text-stone-300 text-xs uppercase">Privacy Policy</a></li>
+            <li><a href="#" class="text-stone-500 hover:text-stone-300 text-xs uppercase">Terms of Service</a></li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Bottom CTA Banner -->
-  <div class="bg-gradient-to-r from-orange-600 to-orange-700 py-8">
-    <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-      <div>
-        <h3 class="text-white font-display font-bold text-lg uppercase tracking-tight mb-2">Ready to Start Your Project?</h3>
-        <p class="text-white/90 text-sm">Get your free consultation and custom quote today</p>
+    <!-- Bottom Footer -->
+    <div class="border-t border-stone-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-stone-600 text-xs uppercase tracking-widest">
+      <div class="flex items-center gap-2 font-bold text-stone-400">
+        <span>DECK MASTERS</span>
       </div>
-      <a href="#quote-form" class="flex items-center gap-2 bg-stone-950 text-white px-8 py-3 font-bold uppercase tracking-widest hover:bg-stone-900 transition-colors whitespace-nowrap">
-        Get Started
-        <ArrowRight class="w-4 h-4" />
-      </a>
+      <div class="flex flex-wrap justify-center gap-8">
+        <a href="#" class="hover:text-white transition-colors">Site Info</a>
+        <a href="#" class="hover:text-white transition-colors">Alaska Service Area</a>
+        <a href="#" class="hover:text-white transition-colors">Deck Building</a>
+        <a href="#" class="hover:text-white transition-colors">Now Hiring</a>
+      </div>
+      <div class="flex gap-4">
+        <a href="#" class="w-8 h-8 border border-stone-800 flex items-center justify-center rounded-full hover:bg-orange-600 hover:border-orange-600 hover:text-white transition-all">
+          <i class="fab fa-instagram text-sm"></i>
+        </a>
+        <a href="#" class="w-8 h-8 border border-stone-800 flex items-center justify-center rounded-full hover:bg-orange-600 hover:border-orange-600 hover:text-white transition-all">
+          <i class="fab fa-facebook text-sm"></i>
+        </a>
+        <a href="#" class="w-8 h-8 border border-stone-800 flex items-center justify-center rounded-full hover:bg-orange-600 hover:border-orange-600 hover:text-white transition-all">
+          <i class="fab fa-twitter text-sm"></i>
+        </a>
+      </div>
     </div>
   </div>
 </footer>
+
+<script>
+  // Testimonial rotation
+  const testimonials = [
+    { quote: "From the initial consultation to the final product... Jordan gave us great recommendations.", author: "Anton Szender" },
+    { quote: "I had a general idea of what I wanted... I ended up with front and back decks that I love.", author: "Shelly Wells" },
+    { quote: "Professional, precise, prompt—clean and accurate. Perfection.", author: "Ruth McNearney" }
+  ];
+
+  let currentTestimonial = 0;
+  const testimonialSlide = document.querySelector('.testimonial-slide');
+
+  if (testimonialSlide) {
+    function rotateTestimonial() {
+      currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+      const current = testimonials[currentTestimonial];
+      testimonialSlide.innerHTML = `
+        <p class="text-stone-300 font-light italic text-lg leading-relaxed mb-2">
+          "${current.quote}"
+        </p>
+        <div class="flex items-center gap-2">
+          <div class="h-px w-8 bg-orange-600"></div>
+          <span class="text-stone-500 text-xs font-bold uppercase tracking-widest">${current.author}</span>
+        </div>
+      `;
+    }
+
+    setInterval(rotateTestimonial, 6000);
+  }
+
+  // Form submission
+  const quoteForm = document.getElementById('quoteForm');
+  if (quoteForm) {
+    quoteForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Form submitted! In your actual implementation, connect this to your backend API.');
+    });
+  }
+</script>
