@@ -15,7 +15,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { ArrowRight, Phone, Star, Shield, Hammer } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer.astro';
-import BetaSection from '../components/BetaSection.astro'; // Import the new BetaSection
 
 // React components (marked for client-side rendering)
 import QuoteForm from '../components/QuoteForm';
@@ -142,9 +141,6 @@ const description = 'Expert deck builders in Anchorage serving South Anchorage, 
     {/* Sticky Mobile Call Button */}
     <StickyMobileCTA client:load />
   </header>
-
-  {/* Beta Section */}
-  <BetaSection />
 
   {/* Portfolio Grid */}
   <PortfolioGrid client:load />
