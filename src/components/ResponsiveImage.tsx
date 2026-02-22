@@ -41,8 +41,15 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   useEffect(() => {
     setIsLoading(priority ? false : true); // Re-initialize loading state on src/priority change
     setHasError(false);
-    // Removed imgRef.current.complete check from here to rely solely on onLoad / onError for state update.
-    // This avoids potential race conditions with cached images.
+
+    const img = imgRef.current;
+    // For cached images, the 'load' event might not fire reliably.
+    // If the image is already complete by the time the effect runs,
+    // manually set the loading state to false and trigger any external onLoad.
+    if (img && img.complete) {
+      setIsLoading(false);
+      onLoad?.();
+    }
   }, [src, priority, onLoad]);
 
   // Generate responsive srcset with available image variants
