@@ -44,6 +44,7 @@ export default function TestimonialVideoCard({
   const handlePlayClick = () => {
     setIsPlaying(true);
     onPlayClick?.();
+    console.log('Playing video from:', finalVideoSrc); // Added console log for debugging
   };
 
   if (!videoUrl) {
@@ -90,6 +91,7 @@ export default function TestimonialVideoCard({
               src={finalVideoSrc} // Use the processed video source here
               controls
               autoPlay
+              muted // Added muted attribute for autoplay compatibility
               className="w-full h-full"
               preload="metadata" // Preload metadata for faster playback start
             >
