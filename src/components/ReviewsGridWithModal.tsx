@@ -3,17 +3,32 @@ import { Star } from 'lucide-react';
 import TestimonialVideoCard from './TestimonialVideoCard';
 import TestimonialImageModal from './TestimonialImageModal';
 import { mapAssetUrl } from '../utils/assetMapper';
+import ResponsiveImage from './ResponsiveImage'; // Import ResponsiveImage
+import type { ImageMetadata } from 'astro'; // Import ImageMetadata for asset types
 
-const ReviewsGridWithModal = ({ testimonialsData }) => {
-    const [selectedReview, setSelectedReview] = useState(null);
+// Define a type for the processed review data
+interface ProcessedReview {
+    text: string;
+    author: string;
+    rating: number;
+    date: string;
+    source: string;
+    avatarUrl?: string;
+    images?: (ImageMetadata | string)[]; // Images can be metadata objects or strings
+    videoUrl?: string;
+    videoThumbnailUrl?: string;
+}
 
-    const filteredReviews = (testimonialsData.rawReviews as Array<{ text: string; author: string; rating: number; date: string; source: string; avatarUrl?: string; images?: string[]; videoUrl?: string; videoThumbnailUrl?: string }>)
-        .filter(r => r.text && r.text.trim().length > 0 && r.rating >= 4)
-        .map(review => ({
+const ReviewsGridWithModal = ({ testimonialsData }: { testimonialsData: { rawReviews: Array<any> } }) => {
+    const [selectedReview, setSelectedReview] = useState<ProcessedReview | null>(null);
+
+    const filteredReviews: ProcessedReview[] = (testimonialsData.rawReviews as Array<any>)
+        .filter((r: any) => r.text && r.text.trim().length > 0 && r.rating >= 4)
+        .map((review: any) => ({
             ...review,
-            // Map all image URLs to local assets
-            images: review.images ? review.images.map(img => mapAssetUrl(img)) : [],
-            // Map avatar URL if it's a local asset, otherwise keep as is (external URL)
+            // Map customer-submitted project images through assetMapper
+            images: review.images ? review.images.map((img: string) => mapAssetUrl(img)) : [],
+            // Avatars are already handled by mapAssetUrl (returns external as-is, maps local)
             avatarUrl: review.avatarUrl ? (mapAssetUrl(review.avatarUrl) as string || review.avatarUrl) : undefined,
         }))
         .sort((a, b) => {
@@ -46,11 +61,30 @@ const ReviewsGridWithModal = ({ testimonialsData }) => {
                                     className="w-full aspect-video cursor-pointer"
                                     onClick={() => setSelectedReview(review)}
                                 >
-                                    <img
-                                        src={review.images[0]}
-                                        alt={`${review.author} project`}
-                                        className="w-full h-full object-cover"
-                                    />
+                                    {/* Use ResponsiveImage for customer-submitted photos */}
+                                    {(() => {
+                                        const firstImage = review.images[0];
+                                        const src = typeof firstImage === 'object' && firstImage !== null && 'src' in firstImage
+                                            ? firstImage.src
+                                            : (firstImage as string || '');
+                                        const width = typeof firstImage === 'object' && firstImage !== null && 'width' in firstImage
+                                            ? firstImage.width
+                                            : undefined;
+                                        const height = typeof firstImage === 'object' && firstImage !== null && 'height' in firstImage
+                                            ? firstImage.height
+                                            : undefined;
+
+                                        return (
+                                            <ResponsiveImage
+                                                src={src}
+                                                alt={`${review.author} project photo`}
+                                                className="w-full h-full object-cover"
+                                                width={width}
+                                                height={height}
+                                                priority={false} // Customer project images are not priority
+                                            />
+                                        );
+                                    })()}
                                 </div>
                             )}
 
