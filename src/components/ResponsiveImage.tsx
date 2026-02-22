@@ -74,14 +74,14 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
 
 
   return (
-    <div className={`relative ${containerClassName || 'w-full h-full'}`}>
+    <div className={`relative overflow-hidden ${isLoading ? 'animate-pulse bg-stone-800' : ''} ${containerClassName || 'w-full h-full'}`}>
       <img
         ref={imgRef}
         src={src}
         srcSet={srcSet}
         sizes={srcSet ? sizes : undefined}
         alt={alt}
-        className={`${className}`} // Ensure no opacity-0 class is applied by default
+        className={`${className}`}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
         onLoad={() => { setIsLoading(false); console.log('IMAGE LOADED:', src); }}
