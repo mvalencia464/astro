@@ -22,6 +22,14 @@ const thumbnailWidth = typeof thumbnailAsset === 'object' && thumbnailAsset !== 
 const thumbnailHeight = typeof thumbnailAsset === 'object' && thumbnailAsset !== null && 'height' in thumbnailAsset
   ? thumbnailAsset.height
   : undefined;
+
+// Debugging logs for frontmatter
+console.log('BetaSection (Astro frontmatter) - videoRawPath:', videoRawPath);
+console.log('BetaSection (Astro frontmatter) - thumbnailRawPath:', thumbnailRawPath);
+console.log('BetaSection (Astro frontmatter) - videoAsset type:', typeof videoAsset, 'value:', videoAsset);
+console.log('BetaSection (Astro frontmatter) - thumbnailAsset type:', typeof thumbnailAsset, 'value:', thumbnailAsset);
+console.log('BetaSection (Astro frontmatter) - finalVideoSrc:', finalVideoSrc);
+console.log('BetaSection (Astro frontmatter) - finalThumbnailSrc:', finalThumbnailSrc);
 ---
 
 <section id="beta-section" class="py-16 bg-stone-900 text-white relative overflow-hidden">
@@ -95,35 +103,42 @@ const thumbnailHeight = typeof thumbnailAsset === 'object' && thumbnailAsset !==
 
     if (wrapper && playButton && videoElement && thumbnailImage) {
       const videoSrc = wrapper.dataset.videoSrc;
+      console.log('BetaSection client script: DOM loaded. Video src from dataset:', videoSrc); // Added client-side log
 
-      playButton.addEventListener('click', () => {
+      playButton.addEventListener('click', (event) => {
+        console.log('BetaSection client script: Play button clicked!'); // Added client-side log
         if (videoSrc) {
+          console.log('BetaSection client script: Attempting to set video src to:', videoSrc); // Added client-side log
           videoElement.src = videoSrc;
           videoElement.classList.remove('hidden'); // Show video
           thumbnailImage.classList.add('hidden'); // Hide thumbnail
           playButton.classList.add('hidden'); // Hide play button
 
-          // Attempt to play the video. Catch potential errors from autoplay policies.
           const playPromise = (videoElement as HTMLVideoElement).play();
           if (playPromise !== undefined) {
-            playPromise.catch(error => {
-              console.error('Video autoplay failed:', error);
-              // Fallback: If autoplay is blocked, just show controls so user can manually play
-              videoElement.removeAttribute('autoplay'); // Ensure no autoplay issues
-              videoElement.setAttribute('controls', ''); // Ensure controls are visible
+            playPromise.then(() => {
+              console.log('BetaSection client script: Video started playing successfully!'); // Added client-side log
+            }).catch(error => {
+              console.error('BetaSection client script: Video autoplay failed:', error);
+              // Fallback: Just ensure controls are visible if autoplay is blocked.
+              videoElement.setAttribute('controls', '');
             });
           }
+        } else {
+          console.error('BetaSection client script: Video source is empty or invalid, cannot play!'); // Added client-side log
         }
       });
 
-      // Optional: Reset when video ends
       videoElement.addEventListener('ended', () => {
+        console.log('BetaSection client script: Video ended. Resetting UI.'); // Added client-side log
         videoElement.classList.add('hidden');
         thumbnailImage.classList.remove('hidden');
         playButton.classList.remove('hidden');
         videoElement.src = ''; // Clear src to prevent re-buffering
         videoElement.load(); // Reload video to reset state for next play
       });
+    } else {
+      console.error('BetaSection client script: Required DOM elements not found for video player.'); // Added client-side log
     }
   });
 </script>
