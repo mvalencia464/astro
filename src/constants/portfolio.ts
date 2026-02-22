@@ -112,7 +112,6 @@ export const MOCK_PROJECTS: Project[] = projects;
 export const PORTFOLIO_GALLERY = [
   // Aerial
   { src: "portfolio/001-aerial-wraparound.webp", caption: "Why fly to Hawaii? Walk out your back door instead." },
-  { src: "portfolio/002-aerial-overview.webp", caption: "The most impressive room in your house... isn't inside." },
   { src: "portfolio/005-aerial-wide.webp", caption: "Wraparound dreams. Custom built. 21-day guarantee." },
   { src: "portfolio/006-aerial-composite.webp", caption: "Premium composite that won't rot, warp, or splinter." },
   { src: "portfolio/008-aerial-elevated.webp", caption: "From concept to completion. No surprises. Just results." },
