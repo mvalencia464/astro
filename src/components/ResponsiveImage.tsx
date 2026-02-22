@@ -42,14 +42,7 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
     setIsLoading(priority ? false : true); // Re-initialize loading state on src/priority change
     setHasError(false);
 
-    const img = imgRef.current;
-    // For cached images, the 'load' event might not fire reliably.
-    // If the image is already complete by the time the effect runs,
-    // manually set the loading state to false and trigger any external onLoad.
-    if (img && img.complete) {
-      setIsLoading(false);
-      onLoad?.();
-    }
+    if (imgRef.current?.complete) { setIsLoading(false); }
   }, [src, priority, onLoad]);
 
   // Generate responsive srcset with available image variants
@@ -79,17 +72,6 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
 
   const srcSet = generateSrcSet(src);
 
-  const handleLoad = () => {
-    setIsLoading(false);
-    setHasError(false);
-    onLoad?.();
-  };
-
-  const handleError = () => {
-    setIsLoading(false);
-    setHasError(true);
-    console.warn(`Failed to load image: ${src}`);
-  };
 
   return (
     <div className={`relative ${containerClassName || 'w-full h-full'}`}>
@@ -102,8 +84,8 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
         className={`${className}`} // Temporarily removed opacity logic for debugging
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
-        onLoad={handleLoad}
-        onError={handleError}
+        onLoad={() => setIsLoading(false)}
+        onError={() => { setIsLoading(false); setHasError(true); }}
       />
       {isLoading && !hasError && (
         <div className="absolute inset-0 bg-stone-800 animate-pulse" />
