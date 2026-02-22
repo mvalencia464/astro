@@ -17,16 +17,16 @@ function getAssetMetadataByPath(relativePath: string): ImageMetadata | string | 
 
   // Check for an exact match first
   if (allAssets[fullPath]) {
-    // Ensure to strictly unwrap the .default property, with a nullish coalescing fallback.
-    return (allAssets[fullPath] as any)?.default ?? allAssets[fullPath];
+    // Strictly return the .default property, as it should always exist for eager globs.
+    return (allAssets[fullPath] as { default: ImageMetadata | string }).default;
   }
 
   // If no exact match, search for a key that ends with the provided relativePath.
   // This handles cases where the input `url` might not include the full `/src/assets/` prefix.
   const foundKey = Object.keys(allAssets).find(key => key.endsWith(`/${relativePath}`));
   if (foundKey) {
-    // Ensure to strictly unwrap the .default property from the found module, with a nullish coalescing fallback.
-    return (allAssets[foundKey] as any)?.default ?? allAssets[foundKey];
+    // Strictly return the .default property from the found module.
+    return (allAssets[foundKey] as { default: ImageMetadata | string }).default;
   }
 
   return undefined;
