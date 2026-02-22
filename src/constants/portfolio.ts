@@ -1,4 +1,4 @@
-import { Project, ServiceNiche } from "../types/portfolio";
+import type { Project, ServiceNiche } from "../types/portfolio";
 
 export const NICHES: ServiceNiche[] = ['New Build', 'Resurfacing', 'Railing', 'Covered Deck', 'Commercial'];
 
