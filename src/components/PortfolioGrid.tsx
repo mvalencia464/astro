@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { mapAssetUrl, isExternalUrl } from '../utils/assetMapper';
+import React, { useMemo } from 'react'; // Removed useState, useEffect
+// Removed X, ChevronLeft, ChevronRight as they are for the lightbox
+import { mapAssetUrl } from '../utils/assetMapper';
 import ResponsiveImage from './ResponsiveImage';
 import { PORTFOLIO_GALLERY } from '../constants/portfolio';
 import type { ImageMetadata } from 'astro';
@@ -10,9 +10,7 @@ interface PortfolioGridProps {
 }
 
 export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
-  // selectedImageMetadata will hold the ImageMetadata object or a string (for external/video)
-  const [selectedImageMetadata, setSelectedImageMetadata] = useState<any>(null); // Changed type to 'any' as requested
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  // Removed selectedImageMetadata, setCurrentImageIndex states
 
   // Map image URLs to their metadata objects or external strings
   const mappedPortfolioAssets = useMemo(() => {
@@ -20,72 +18,14 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
     return sourceImages.map(url => mapAssetUrl(url));
   }, [images]);
 
-  // Derived array of actual image sources (strings) for preloading, etc.
-  const portfolioImageSources = useMemo(() => {
-    return mappedPortfolioAssets.map(asset => {
-      if (!asset) return '';
-      if (typeof asset === 'string') return asset; // External URL or video path
-      return (asset as ImageMetadata).src; // Cast to ImageMetadata to access src
-    });
-  }, [mappedPortfolioAssets]);
+  // Removed portfolioImageSources as it was primarily for preloading in the modal
 
   const getCaption = (index: number) => {
     if (images) return `Project Image ${index + 1}`;
     return PORTFOLIO_GALLERY[index]?.caption || '';
   };
 
-  const handleImageClick = (index: number) => {
-    // Ensure we pass the entire asset object (metadata or string)
-    setSelectedImageMetadata(mappedPortfolioAssets[index] || null);
-    setCurrentImageIndex(index);
-    preloadAdjacentImages(index);
-  };
-
-  const preloadAdjacentImages = (currentIndex: number) => {
-    const nextIndex = (currentIndex + 1) % portfolioImageSources.length;
-    const prevIndex = (currentIndex - 1 + portfolioImageSources.length) % portfolioImageSources.length;
-
-    // Preload in background using the resolved src string
-    const nextImg = new Image();
-    nextImg.src = portfolioImageSources[nextIndex];
-
-    const prevImg = new Image();
-    prevImg.src = portfolioImageSources[prevIndex];
-  };
-
-  const handleNextImage = () => {
-    const nextIndex = (currentImageIndex + 1) % mappedPortfolioAssets.length;
-    setSelectedImageMetadata(mappedPortfolioAssets[nextIndex] || null);
-    setCurrentImageIndex(nextIndex);
-    preloadAdjacentImages(nextIndex);
-  };
-
-  const handlePrevImage = () => {
-    const prevIndex = (currentImageIndex - 1 + mappedPortfolioAssets.length) % mappedPortfolioAssets.length;
-    setSelectedImageMetadata(mappedPortfolioAssets[prevIndex] || null);
-    setCurrentImageIndex(prevIndex);
-    preloadAdjacentImages(prevIndex);
-  };
-
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (!selectedImageMetadata) return;
-
-      if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        handleNextImage();
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        handlePrevImage();
-      } else if (e.key === 'Escape') {
-        setSelectedImageMetadata(null);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [selectedImageMetadata, currentImageIndex, mappedPortfolioAssets]);
+  // Removed handleImageClick, preloadAdjacentImages, handleNextImage, handlePrevImage, useEffect for keyboard navigation
 
   return (
     <section className="py-24 bg-stone-900 relative overflow-hidden">
@@ -121,8 +61,8 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
             return (
               <div
                 key={index}
-                onClick={() => handleImageClick(index)}
-                className="relative group overflow-hidden rounded-sm bg-stone-800 cursor-pointer"
+                // Removed onClick handler as modal functionality is removed
+                className="relative group overflow-hidden rounded-sm bg-stone-800" // Removed cursor-pointer
               >
                 {/* ResponsiveImage is read-only. We pass src, width, and height. */}
                 {/* It's assumed ResponsiveImage internally uses an <img> tag and applies these props. */}
@@ -147,68 +87,7 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
         </div>
       </div>
 
-      {/* Image Lightbox */}
-      {selectedImageMetadata && (
-        <div
-          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
-          onClick={() => setSelectedImageMetadata(null)}
-        >
-          {/* Close Button */}
-          <button
-            onClick={() => setSelectedImageMetadata(null)}
-            className="absolute top-6 right-6 z-50 bg-white/10 hover:bg-white/20 transition-colors p-2 rounded-full"
-          >
-            <X className="w-6 h-6 text-white" />
-          </button>
-
-          {/* Previous Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePrevImage();
-            }}
-            className="absolute left-6 top-1/2 -translate-y-1/2 z-50 bg-white/10 hover:bg-orange-600 transition-colors p-3 rounded-full"
-          >
-            <ChevronLeft className="w-6 h-6 text-white" />
-          </button>
-
-          {/* Image Container */}
-          <div className="flex flex-col items-center gap-4 max-w-4xl w-full">
-            <ResponsiveImage
-              src={typeof selectedImageMetadata === 'object' && selectedImageMetadata !== null ? selectedImageMetadata.src : (selectedImageMetadata as string || '')}
-              alt={getCaption(currentImageIndex)}
-              className="max-h-[75vh] max-w-[90vw] object-contain rounded-sm"
-              priority={true}
-              {...(typeof selectedImageMetadata === 'object' && selectedImageMetadata !== null && selectedImageMetadata.width && { width: selectedImageMetadata.width })}
-              {...(typeof selectedImageMetadata === 'object' && selectedImageMetadata !== null && selectedImageMetadata.height && { height: selectedImageMetadata.height })}
-            />
-            <div className="bg-black/50 backdrop-blur-sm px-6 py-3 rounded-sm max-w-2xl">
-              <p className="text-white text-sm font-semibold leading-relaxed text-center">
-                {getCaption(currentImageIndex)}
-              </p>
-              <p className="text-stone-400 text-xs text-center mt-2 font-medium">
-                Image {currentImageIndex + 1} of {mappedPortfolioAssets.length}
-              </p>
-            </div>
-          </div>
-
-          {/* Next Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleNextImage();
-            }}
-            className="absolute right-6 top-1/2 -translate-y-1/2 z-50 bg-white/10 hover:bg-orange-600 transition-colors p-3 rounded-full"
-          >
-            <ChevronRight className="w-6 h-6 text-white" />
-          </button>
-
-          {/* Keyboard Navigation Hint */}
-          <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-stone-500 text-xs text-center">
-            Use ← → arrow keys or buttons to navigate
-          </p>
-        </div>
-      )}
+      {/* Removed Image Lightbox */}
     </section>
   );
 };
