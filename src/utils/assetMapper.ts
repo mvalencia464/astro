@@ -1,6 +1,6 @@
 import type { ImageMetadata } from 'astro';
 
-const allAssets = import.meta.glob<{ default: ImageMetadata | string }>('/src/assets/{portfolio,testimonials}/**/*.{webp,jpg,jpeg,png,svg}', { eager: true });
+const allAssets = import.meta.glob<{ default: ImageMetadata | string }>('/src/assets/{portfolio,testimonials}/**/*.{webp,jpg,jpeg,png,svg,mp4}', { eager: true });
 
 
 /**
