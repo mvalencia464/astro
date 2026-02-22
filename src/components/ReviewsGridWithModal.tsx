@@ -12,7 +12,9 @@ const ReviewsGridWithModal = ({ testimonialsData }) => {
         .map(review => ({
             ...review,
             // Map all image URLs to local assets
-            images: review.images ? review.images.map(img => mapAssetUrl(img, false)) : []
+            images: review.images ? review.images.map(img => mapAssetUrl(img)) : [],
+            // Map avatar URL if it's a local asset, otherwise keep as is (external URL)
+            avatarUrl: review.avatarUrl ? (mapAssetUrl(review.avatarUrl) as string || review.avatarUrl) : undefined,
         }))
         .sort((a, b) => {
             // Sort video testimonials (Erica Leman) to the top

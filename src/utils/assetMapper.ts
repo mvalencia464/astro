@@ -1,8 +1,34 @@
 import type { ImageMetadata } from 'astro';
 
-// Eagerly glob all local assets (images and videos) under src/assets/
-// This covers portfolio images, testimonial images, and testimonial video thumbnails.
-const allAssets = import.meta.glob<{ default: ImageMetadata | string }>('/src/assets/**/*.{webp,jpg,jpeg,png,svg,mp4}', { eager: true });
+// Eagerly glob all local images under src/assets/portfolio/ and src/assets/testimonials/
+// This covers portfolio images and testimonial images (excluding videos from ImageMetadata glob)
+const allAssets = import.meta.glob<{ default: ImageMetadata }>('/src/assets/{portfolio,testimonials}/**/*.{webp,jpg,jpeg,png,svg}', { eager: true });
+
+// Additionally, for videos which are typically raw strings, we might need a separate glob if they are to be processed differently.
+// For now, mapAssetUrl will handle them as raw strings if they exist at these paths.
+// The previous glob was: '/src/assets/**/*.{webp,jpg,jpeg,png,svg,mp4}'
+// Let's refine the glob to explicitly cover images for metadata, and then adjust getAssetMetadataByPath for other types.
+// Re-evaluating: The initial glob `('/src/assets/**/*.{webp,jpg,jpeg,png,svg,mp4}')` was actually more comprehensive for both image metadata and raw video paths.
+// The core issue is ensuring `.default` is correctly accessed and external URLs are passed through.
+// The current glob in the provided file `'/src/assets/**/*.{webp,jpg,jpeg,png,svg,mp4}'` is suitable.
+// The main change will be ensuring the `mapAssetUrl` handles the `avatarUrl` correctly using this glob, which it already does.
+// The request is to glob 'portfolio' and 'testimonials' specifically for images.
+
+// Let's stick with the broader glob but ensure mapAssetUrl's logic is sound for the default export.
+// The previous change already refined getAssetMetadataByPath to return `?.default || allAssets[fullPath]`
+// which correctly handles the eager glob wrapper.
+// So, the glob pattern itself in assetMapper.ts as '/src/assets/**/*.{webp,jpg,jpeg,png,svg,mp4}' is correct
+// if we want to also track video paths and SVG's through the mapper.
+// However, the request specifically asks for: '/src/assets/{portfolio,testimonials}/**/*.{webp,jpg,jpeg,png,svg}'
+// This implies limiting it to these directories and removing MP4 if it's meant to be treated as a direct URL.
+
+// Given the `allAssets` glob is currently `'/src/assets/**/*.{webp,jpg,jpeg,png,svg,mp4}'`
+// and the request is for `'/src/assets/{portfolio,testimonials}/**/*.{webp,jpg,jpeg,png,svg}'`
+// This will narrow the scope, which might exclude SVGs or other assets outside those specific folders,
+// but let's follow the user's explicit request.
+
+// Let's adjust the glob to precisely match the requested folders and extensions.
+const allAssets = import.meta.glob<{ default: ImageMetadata | string }>('/src/assets/{portfolio,testimonials}/**/*.{webp,jpg,jpeg,png,svg}', { eager: true });
 
 
 /**
