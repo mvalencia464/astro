@@ -81,13 +81,13 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
         srcSet={srcSet}
         sizes={srcSet ? sizes : undefined}
         alt={alt}
-        className={`${className}`} // Temporarily removed opacity logic for debugging
+        className={`${className}`} // Ensure no opacity-0 class is applied by default
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
-        onLoad={() => setIsLoading(false)}
-        onError={() => { setIsLoading(false); setHasError(true); }}
+        onLoad={() => { setIsLoading(false); console.log('IMAGE LOADED:', src); }}
+        onError={() => { setIsLoading(false); setHasError(true); console.error('IMAGE ERROR:', src); }}
       />
-      {isLoading && !hasError && (
+      {isLoading && !priority && ( // Only show pulse if not a priority image and still loading
         <div className="absolute inset-0 bg-stone-800 animate-pulse" />
       )}
       {hasError && (
