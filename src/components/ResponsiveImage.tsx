@@ -34,16 +34,11 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   priority = false,
   onLoad,
 }) => {
-  const [isLoading, setIsLoading] = useState(priority ? false : true);
   const [hasError, setHasError] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
 
-  useEffect(() => {
-    setIsLoading(priority ? false : true); // Re-initialize loading state on src/priority change
-    setHasError(false);
-
-    if (imgRef.current?.complete) { setIsLoading(false); }
-  }, [src, priority, onLoad]);
+  // No useEffect for isLoading state as it's now CSS-driven.
+  // The imgRef is still useful for other potential checks if needed.
 
   // Generate responsive srcset with available image variants
   const generateSrcSet = (imagePath: string): string | undefined => { // `imagePath` is expected to be a string based on `src` prop type
@@ -74,7 +69,9 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
 
 
   return (
-    <div className={`relative overflow-hidden ${isLoading ? 'animate-pulse bg-stone-800' : ''} ${containerClassName || 'w-full h-full'}`}>
+    // The container now has a static bg-stone-800. Any pulse animation should be handled via CSS.
+    // The image will simply cover this background when it loads.
+    <div className={`relative overflow-hidden bg-stone-800 ${containerClassName || 'w-full h-full'}`}>
       <img
         ref={imgRef}
         src={src}
@@ -84,8 +81,10 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
         className={`${className}`}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
-        onLoad={() => { setIsLoading(false); console.log('IMAGE LOADED:', src); }}
-        onError={() => { setIsLoading(false); setHasError(true); console.error('IMAGE ERROR:', src); }}
+        // The image itself will handle its visibility once loaded by the browser.
+        // We ensure onLoad prop is still called and error state is set.
+        onLoad={() => { onLoad?.(); console.log('IMAGE LOADED:', src); }}
+        onError={() => { setHasError(true); console.error('IMAGE ERROR:', src); }}
       />
       {hasError && (
         <div className="absolute inset-0 bg-stone-800 flex items-center justify-center">
