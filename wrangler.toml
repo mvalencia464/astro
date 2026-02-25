@@ -4,6 +4,6 @@ compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
-VITE_TURNSTILE_SITE_KEY = "0x4AAAAAACfySnpzI08Ou8wN"
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAACfySnpzI08Ou8wN"
 
 
