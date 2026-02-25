@@ -1,0 +1,14 @@
+name = "deckmasters-astro"
+account_id = "e1ef23a482d710064edcfdf77f1324c1"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+VITE_TURNSTILE_SITE_KEY = "0x4AAAAAACfySnpzI08Ou8wN"
+
+[env.production]
+routes = [
+  { pattern = "decks.stokeleads.com/*", custom_domain = true }
+]
+
+

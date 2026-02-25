@@ -341,8 +341,11 @@ const QuoteForm = () => {
         {/* Turnstile Widget */}
         <div className="flex justify-center py-2">
           <TurnstileWidget
-            siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
-            onVerify={(token) => setTurnstileToken(token)}
+            siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAACfySnpzI08Ou8wN"}
+            onVerify={(token) => {
+              console.log('Turnstile verified successfully');
+              setTurnstileToken(token);
+            }}
             onError={(err) => console.error('Turnstile Error:', err)}
           />
         </div>

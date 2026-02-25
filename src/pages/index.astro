@@ -28,6 +28,7 @@ import StickyMobileCTA from '../components/StickyMobileCTA';
 import testimonialsData from '../data/testimonials.json';
 
 // Assets
+import { Image } from 'astro:assets';
 import heroImage from '../assets/hero/002-hero-aerial.webp';
 
 // Page metadata
@@ -43,11 +44,12 @@ const description = 'Expert deck builders in Anchorage serving South Anchorage, 
   <header class="relative min-h-screen flex items-center overflow-hidden pt-24 pb-48 lg:pt-0 lg:pb-0">
     {/* Background Image with Overlay */}
     <div class="absolute inset-0 z-0 bg-stone-900">
-      <Image
-        src={heroImage}
+      <img
+        src={heroImage.src}
         alt="Modern Deck in Anchorage"
         class="w-full h-full object-cover opacity-70 scale-105 animate-slow-zoom"
-        sizes="(max-width: 640px) 640px, (max-width: 1024px) 1024px, 1440px"
+        fetchpriority="high"
+        loading="eager"
       />
       <div class="absolute inset-0 bg-stone-950/50 mix-blend-multiply"></div>
       <div class="absolute inset-0 bg-gradient-to-b from-stone-950/90 via-stone-950/40 to-stone-950"></div>

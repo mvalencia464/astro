@@ -17,7 +17,7 @@ export interface SubmissionResult {
 }
 
 /**
- * Submits lead data to the Netlify Function lead endpoint.
+ * Submits lead data with Cloudflare Turnstile verification.
  * @param data The form data.
  * @param turnstileToken The token from Cloudflare Turnstile.
  */
@@ -33,7 +33,7 @@ export async function submitLeadWithTurnstile(
   }
 
   try {
-    const response = await fetch('/.netlify/functions/lead', {
+    const response = await fetch('/api/lead', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
