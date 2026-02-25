@@ -343,7 +343,7 @@ const QuoteForm = () => {
           <TurnstileWidget
             siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAACfySnpzI08Ou8wN"}
             onVerify={(token) => {
-              console.log('Turnstile verified successfully');
+              console.log('Turnstile verified with:', import.meta.env.VITE_TURNSTILE_SITE_KEY ? 'Env Var' : 'Fallback Key');
               setTurnstileToken(token);
             }}
             onError={(err) => console.error('Turnstile Error:', err)}

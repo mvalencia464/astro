@@ -6,9 +6,4 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 VITE_TURNSTILE_SITE_KEY = "0x4AAAAAACfySnpzI08Ou8wN"
 
-[env.production]
-routes = [
-  { pattern = "decks.stokeleads.com/*", custom_domain = true }
-]
-
 
