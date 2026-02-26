@@ -35,28 +35,19 @@ const QuoteForm = () => {
 
     const initAutocomplete = () => {
       if (window.google && window.google.maps && window.google.maps.places && addressInputRef.current) {
-        // Updated to use the new suggested PlaceAutocompleteElement instead of Autocomplete
-        const autocomplete = new window.google.maps.places.PlaceAutocompleteElement({
+        // Reverting back to standard Autocomplete because PlaceAutocompleteElement destroys custom Tailwind styling by using Shadow DOM. The deprecation warning is safe to ignore for 12 months.
+        const autocomplete = new window.google.maps.places.Autocomplete(addressInputRef.current, {
+          types: ['address'],
           componentRestrictions: { country: 'us' }, // Restrict to US
+          fields: ['formatted_address', 'geometry']
         });
 
-        // Hide the default input and append the new element
-        addressInputRef.current.style.display = 'none';
-        addressInputRef.current.parentElement?.appendChild(autocomplete);
-
-        autocomplete.addEventListener('gmp-placeselect', async (e: any) => {
-          const place = e.place;
-          if (!place) return;
-
-          try {
-            await place.fetchFields({ fields: ['formattedAddress'] });
-            if (place.formattedAddress) {
-              setFormData(prev => ({ ...prev, address: place.formattedAddress }));
-              // Clear address error if exists
-              setValidationErrors(prev => prev.filter(error => error.field !== 'address'));
-            }
-          } catch (err) {
-            console.error('Failed to fetch place fields', err);
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          if (place.formatted_address) {
+            setFormData(prev => ({ ...prev, address: place.formatted_address }));
+            // Clear address error if exists
+            setValidationErrors(prev => prev.filter(error => error.field !== 'address'));
           }
         });
 

@@ -44,32 +44,7 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   // No useEffect for isLoading state as it's now CSS-driven.
   // The imgRef is still useful for other potential checks if needed.
 
-  // Generate responsive srcset with available image variants
-  const generateSrcSet = (imagePath: string): string | undefined => { // `imagePath` is expected to be a string based on `src` prop type
-    const path = imagePath; // `src` prop is always a string, so simplify this assignment.
-
-    if (!path) return undefined;
-
-    // Extract base path without extension
-    const basePath = path.replace(/\.[^/.]+$/, '');
-
-    // For portfolio images, just use the base image without srcset variants
-    // This avoids 404s for missing responsive variants
-    if (path.includes('/portfolio/')) {
-      return undefined;
-    }
-
-    // Check if this is a non-portfolio image that has variants
-    if (basePath.match(/-(320|640|1024)$/)) {
-      // Already a specific size variant, don't modify
-      return undefined;
-    }
-
-    // For other images, check if they have variants
-    return `${basePath}-320.webp 320w, ${basePath}-640.webp 640w, ${basePath}.webp 1024w`;
-  };
-
-  const srcSet = generateSrcSet(src);
+  const srcSet = undefined; // Disabled hardcoded srcset generation due to Vite asset hashing causing 404s.
 
 
   return (
