@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import GALLERY_DATA from '../data/portfolio-gallery.json';
+import { ArrowRight } from 'lucide-react';
 
-export const PortfolioGrid: React.FC = () => {
+interface PortfolioItem {
+  src: string;
+  caption: string;
+  optimizedSrc?: string;
+  srcSet?: string;
+}
+
+interface PortfolioGridProps {
+  initialData?: PortfolioItem[];
+}
+
+export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ initialData }) => {
+  const data = initialData || (GALLERY_DATA as PortfolioItem[]);
+  const [showAll, setShowAll] = useState(false);
+  const initialItems = 6;
+  const displayedItems = showAll ? data : data.slice(0, initialItems);
+
   return (
     <section className="py-24 bg-stone-900 relative overflow-hidden">
       {/* Decorative border at top */}
@@ -27,16 +44,17 @@ export const PortfolioGrid: React.FC = () => {
 
         {/* Image Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-[250px]">
-          {GALLERY_DATA.map((item, index) => (
+          {displayedItems.map((item, index) => (
             <div
               key={index}
               className="relative group overflow-hidden rounded-sm bg-stone-800"
             >
               <img
-                src={item.src}
+                src={item.optimizedSrc || item.src}
+                srcSet={item.srcSet}
                 alt={item.caption}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                loading={index < 6 ? 'eager' : 'lazy'}
+                loading={index < 3 ? 'eager' : 'lazy'}
                 decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -46,6 +64,19 @@ export const PortfolioGrid: React.FC = () => {
             </div>
           ))}
         </div>
+
+        {/* Show More Button */}
+        {!showAll && data.length > initialItems && (
+          <div className="mt-12 text-center">
+            <button
+              onClick={() => setShowAll(true)}
+              className="inline-flex items-center gap-2 px-8 py-4 border border-stone-700 text-stone-400 hover:border-orange-600 hover:text-white font-display font-bold uppercase text-xs tracking-widest transition-all duration-300 group"
+            >
+              View All Projects
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

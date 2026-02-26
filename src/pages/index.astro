@@ -10,23 +10,53 @@ import Footer from '../components/Footer.astro';
 // React components (marked for client-side rendering)
 import QuoteForm from '../components/QuoteForm';
 import TestimonialRotator from '../components/TestimonialRotator';
+import { getImage } from 'astro:assets';
 import PortfolioGrid from '../components/PortfolioGrid';
-import ReviewsGridWithModal from '../components/ReviewsGridWithModal';
-import ProcessSection from '../components/ProcessSection';
-import StickyMobileCTA from '../components/StickyMobileCTA';
-
-// Data
-import testimonialsData from '../data/testimonials.json';
-
-// Hero image served from public/ for stable URL (no Vite hashing)
-const heroImageSrc = '/images/hero/002-hero-aerial.webp';
+import portfolioData from '../data/portfolio-gallery.json';
 
 // Page metadata
 const title = 'DECK MASTERS | Anchorage Premium Decks';
 const description = 'Expert deck builders in Anchorage serving South Anchorage, Hillside & Eagle River. Custom composite & cedar decks engineered for Alaska winters. 25-year warranty. Free quotes.';
 
+// 1. Optimize Hero Image
+import heroImgSrc from '../assets/hero/002-hero-aerial.webp';
+const optimizedHero = await getImage({
+  src: heroImgSrc,
+  width: 1920,
+  height: 1080,
+  format: 'webp',
+  quality: 80
+});
+
+// 2. Pre-optimize first 6 portfolio images for the React Grid using Vite's glob
+const portfolioAssets = import.meta.glob('../assets/portfolio/*.webp', { eager: true });
+
+const preparedPortfolioData = await Promise.all(
+  portfolioData.map(async (item, index) => {
+    if (index >= 6) return item;
+    
+    // Find matching asset in the glob results
+    const assetFileName = item.src.split('/').pop();
+    const assetKey = Object.keys(portfolioAssets).find(key => key.endsWith(assetFileName!));
+    
+    if (assetKey) {
+      const asset = (portfolioAssets[assetKey] as any).default;
+      const optimized = await getImage({
+        src: asset,
+        width: 800,
+        format: 'webp',
+      });
+      return { 
+        ...item, 
+        optimizedSrc: optimized.src,
+        srcSet: optimized.srcSet.attribute 
+      };
+    }
+    return item;
+  })
+);
+
 // Retrieve Turnstile Site Key from Cloudflare Worker Environment Variables
-// The virtual module 'cloudflare:workers' provides access to bindings in Astro 6
 const turnstileSiteKey = (env as any)?.PUBLIC_TURNSTILE_SITE_KEY || process.env.PUBLIC_TURNSTILE_SITE_KEY || import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 ---
 
@@ -39,7 +69,8 @@ const turnstileSiteKey = (env as any)?.PUBLIC_TURNSTILE_SITE_KEY || process.env.
     {/* Background Image with Overlay */}
     <div class="absolute inset-0 z-0 bg-stone-900">
       <img
-        src={heroImageSrc}
+        src={optimizedHero.src}
+        srcset={optimizedHero.srcSet.attribute}
         alt="Modern Deck in Anchorage"
         class="w-full h-full object-cover opacity-70 scale-105 animate-slow-zoom"
         fetchpriority="high"
@@ -139,7 +170,7 @@ const turnstileSiteKey = (env as any)?.PUBLIC_TURNSTILE_SITE_KEY || process.env.
   </header>
 
   {/* Portfolio Grid */}
-  <PortfolioGrid client:load />
+  <PortfolioGrid client:load initialData={preparedPortfolioData} />
 
   {/* Reviews Section */}
   <section id="reviews" class="py-32 bg-stone-950 border-t border-stone-800 relative overflow-hidden">

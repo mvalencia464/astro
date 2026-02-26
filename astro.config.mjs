@@ -7,14 +7,12 @@ export default defineConfig({
   output: 'server',
   adapter: cloudflare({
     cloudflareModules: true,
+    imageService: 'cloudflare-binding',
     platformProxy: {
       enabled: true
     }
   }),
   integrations: [react()],
-  image: {
-    service: { entrypoint: 'astro/assets/services/noop' }
-  },
   vite: {
     server: {
       hmr: {
