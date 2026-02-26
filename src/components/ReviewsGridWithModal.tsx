@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Star } from 'lucide-react';
+import { Star, Image as ImageIcon } from 'lucide-react';
 import TestimonialVideoCard from './TestimonialVideoCard';
 import TestimonialImageModal from './TestimonialImageModal';
 import { mapAssetUrl } from '../utils/assetMapper';
-import ResponsiveImage from './ResponsiveImage'; // Import ResponsiveImage
-import type { ImageMetadata } from 'astro'; // Import ImageMetadata for asset types
+import ResponsiveImage from './ResponsiveImage';
+import type { ImageMetadata } from 'astro';
 
-// Define a type for the processed review data
 interface ProcessedReview {
     text: string;
     author: string;
@@ -14,57 +13,45 @@ interface ProcessedReview {
     date: string;
     source: string;
     avatarUrl?: string;
-    images?: (ImageMetadata | string)[]; // Images can be metadata objects or strings
+    images?: (ImageMetadata | string)[];
     videoUrl?: string;
     videoThumbnailUrl?: string;
 }
 
 const ReviewsGridWithModal = ({ testimonialsData }: { testimonialsData: { rawReviews: Array<any> } }) => {
     const [selectedReview, setSelectedReview] = useState<ProcessedReview | null>(null);
-    const [visibleCount, setVisibleCount] = useState(8);
 
     const filteredReviews: ProcessedReview[] = (testimonialsData.rawReviews as Array<any>)
         .filter((r: any) => r.text && r.text.trim().length > 0 && r.rating >= 4)
         .map((review: any) => ({
             ...review,
-            // Map customer-submitted project images through assetMapper
             images: review.images ? review.images.map((img: string) => mapAssetUrl(img)) : [],
-            // Avatars are already handled by mapAssetUrl (returns external as-is, maps local)
             avatarUrl: review.avatarUrl ? (mapAssetUrl(review.avatarUrl) as string || review.avatarUrl) : undefined,
         }))
         .sort((a, b) => {
-            // Sort video testimonials (Erica Leman) to the top
             const aIsVideo = a.videoUrl ? 1 : 0;
             const bIsVideo = b.videoUrl ? 1 : 0;
             return bIsVideo - aIsVideo;
         });
 
-    const displayedReviews = filteredReviews.slice(0, visibleCount);
-
     return (
         <>
-            {/* Masonry grid using CSS columns */}
             <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
-                {displayedReviews.map((review, i) => {
-                    // Check if this is a video testimonial
+                {filteredReviews.map((review, i) => {
                     const isVideoTestimonial = review.videoUrl && typeof review.videoUrl === 'string';
 
                     return isVideoTestimonial ? (
-                        // Video Testimonial Card
                         <TestimonialVideoCard key={i} {...review} />
                     ) : (
-                        // Image/Text Testimonial Card
                         <div
                             key={i}
                             className="break-inside-avoid mb-4 bg-stone-900 border border-stone-800 overflow-hidden hover:border-orange-600/30 transition-all duration-300 group"
                         >
-                            {/* Images Carousel - SIMPLIFIED */}
                             {review.images && review.images.length > 0 && (
                                 <div
                                     className="w-full aspect-video cursor-pointer"
                                     onClick={() => setSelectedReview(review)}
                                 >
-                                    {/* Use ResponsiveImage for customer-submitted photos */}
                                     {(() => {
                                         const firstImage = review.images[0];
                                         const src = typeof firstImage === 'object' && firstImage !== null && 'src' in firstImage
@@ -84,30 +71,25 @@ const ReviewsGridWithModal = ({ testimonialsData }: { testimonialsData: { rawRev
                                                 className="w-full h-full object-cover"
                                                 width={width}
                                                 height={height}
-                                                priority={false} // Customer project images are not priority
+                                                priority={false}
                                             />
                                         );
                                     })()}
                                 </div>
                             )}
 
-                            {/* Content */}
                             <div className="p-6">
-                                {/* Stars */}
                                 <div className="flex gap-1 mb-4">
                                     {[...Array(review.rating)].map((_, s) => (
                                         <Star key={s} className="w-3.5 h-3.5 text-orange-500 fill-orange-500" />
                                     ))}
                                 </div>
 
-                                {/* Quote */}
                                 <p className="text-stone-300 text-sm leading-relaxed mb-5 font-light">
                                     &ldquo;{review.text}&rdquo;
                                 </p>
 
-                                {/* Author */}
                                 <div className="flex items-center gap-3 pt-4 border-t border-stone-800">
-                                    {/* Avatar circle */}
                                     <div className="w-8 h-8 rounded-full bg-orange-600/20 border border-orange-600/30 flex items-center justify-center shrink-0 overflow-hidden relative">
                                         {review.avatarUrl && (
                                             <img
@@ -135,19 +117,6 @@ const ReviewsGridWithModal = ({ testimonialsData }: { testimonialsData: { rawRev
                     );
                 })}
             </div>
-
-            {/* Load More Button */}
-            {visibleCount < filteredReviews.length && (
-                <div className="mt-12 text-center">
-                    <button
-                        onClick={() => setVisibleCount(prev => prev + 12)}
-                        className="inline-flex items-center gap-2 px-8 py-4 border border-stone-700 text-stone-400 hover:border-orange-600 hover:text-white font-display font-bold uppercase text-xs tracking-widest transition-all duration-300 group"
-                    >
-                        Load More Reviews
-                        <Star className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                    </button>
-                </div>
-            )}
 
             {selectedReview && (
                 <TestimonialImageModal

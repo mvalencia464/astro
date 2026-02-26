@@ -39,8 +39,6 @@ const portfolioAssets = import.meta.glob('../assets/portfolio/*.webp', { eager: 
 
 const preparedPortfolioData = await Promise.all(
   portfolioData.map(async (item, index) => {
-    if (index >= 6) return item;
-    
     // Find matching asset in the glob results
     const assetFileName = item.src.split('/').pop();
     const assetKey = Object.keys(portfolioAssets).find(key => key.endsWith(assetFileName!));

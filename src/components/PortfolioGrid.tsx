@@ -15,9 +15,6 @@ interface PortfolioGridProps {
 
 export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ initialData }) => {
   const data = initialData || (GALLERY_DATA as PortfolioItem[]);
-  const [showAll, setShowAll] = useState(false);
-  const initialItems = 6;
-  const displayedItems = showAll ? data : data.slice(0, initialItems);
 
   return (
     <section className="py-24 bg-stone-900 relative overflow-hidden">
@@ -44,7 +41,7 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ initialData }) => 
 
         {/* Image Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-[250px]">
-          {displayedItems.map((item, index) => (
+          {data.map((item, index) => (
             <div
               key={index}
               className="relative group overflow-hidden rounded-sm bg-stone-800"
@@ -64,19 +61,6 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ initialData }) => 
             </div>
           ))}
         </div>
-
-        {/* Show More Button */}
-        {!showAll && data.length > initialItems && (
-          <div className="mt-12 text-center">
-            <button
-              onClick={() => setShowAll(true)}
-              className="inline-flex items-center gap-2 px-8 py-4 border border-stone-700 text-stone-400 hover:border-orange-600 hover:text-white font-display font-bold uppercase text-xs tracking-widest transition-all duration-300 group"
-            >
-              View All Projects
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
-        )}
       </div>
     </section>
   );
