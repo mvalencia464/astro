@@ -1,6 +1,6 @@
 import React from 'react';
 
-const parseMarkdown = (text) => {
+const parseMarkdown = (text: string) => {
   if (!text) return text;
   const parts = [];
   let lastIndex = 0;

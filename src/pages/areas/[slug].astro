@@ -1,0 +1,113 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer.astro';
+
+export const prerender = true;
+
+// 1. Fetch live content dynamically from the 'areas' inline loader
+export async function getStaticPaths() {
+  const areas = await getCollection('areas');
+  return areas.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+// 2. Extract props
+const { entry } = Astro.props;
+const { name, region, population, highlight, geoImage } = entry.data;
+
+const description = `Leading premium deck builders in ${name}, ${region}. We specialize in ${highlight}.`;
+const pageTitle = `Deck Builders in ${name}, AK | Deck Masters`;
+---
+
+<BaseLayout title={pageTitle} description={description}>
+  <Header client:load />
+
+  <!-- Hero Section -->
+  <section class="relative min-h-[70vh] flex items-center pt-24 pb-12 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img 
+        src={geoImage} 
+        alt={`Beautiful landscape of ${name}, Alaska`} 
+        class="w-full h-full object-cover opacity-30" 
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-stone-950/40"></div>
+    </div>
+    
+    <div class="container mx-auto px-6 relative z-10 max-w-5xl">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold tracking-widest uppercase mb-8">
+        <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+        Currently Serving {region}
+      </div>
+      
+      <h1 class="text-6xl md:text-8xl font-display font-bold uppercase leading-tight mb-8">
+        Premium Decks in <br /> <span class="text-orange-500">{name}</span>, AK
+      </h1>
+      
+      <p class="text-xl md:text-2xl text-stone-300 max-w-2xl leading-relaxed mb-12">
+        We specialize in engineering high-end, weather-resistant outdoor living spaces tailored specifically for {highlight}. 
+      </p>
+
+      <div class="flex flex-wrap gap-6 items-center">
+        <a href="/#quote" class="bg-orange-600 hover:bg-orange-500 text-white px-8 py-4 font-bold uppercase tracking-widest text-sm transition-colors text-center inline-block">
+          Get a Free Quote
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Local SEO Meta Context Section -->
+  <section class="py-24 bg-stone-900 border-y border-stone-800">
+    <div class="container mx-auto px-6 max-w-4xl">
+      <div class="grid md:grid-cols-2 gap-12">
+        <div>
+          <h2 class="text-3xl font-display font-bold uppercase mb-6 flex items-center gap-3">
+            <i class="fas fa-map-marker-alt text-orange-500"></i> Area Profile
+          </h2>
+          <div class="space-y-4 text-stone-300">
+            <p><strong class="text-white">Service Region:</strong> {region}</p>
+            <p><strong class="text-white">Local Population:</strong> {population}</p>
+            <p><strong class="text-white">Service Status:</strong> Active & taking new projects</p>
+          </div>
+        </div>
+        <div>
+          <h2 class="text-3xl font-display font-bold uppercase mb-6 flex items-center gap-3">
+            <i class="fas fa-hammer text-orange-500"></i> Builder's Note
+          </h2>
+          <p class="text-stone-300 leading-relaxed">
+            Building decks in {name} requires special attention to freeze-thaw cycles and severe weather patterns. Our composite materials and heavy-duty structural framing exceed standard local building codes, guaranteeing your deck withstands extreme seasons.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Content Block -->
+  <main class="max-w-4xl mx-auto px-6 py-24">
+    <div class="prose prose-stone prose-invert lg:prose-xl mx-auto">
+      <h3>Why Choose Us in {name}?</h3>
+      <p>
+        Finding a reliable contractor in the {region} can be challenging. We bring years of specialized Alaskan deck building experience directly to your neighborhood. Whether you are looking for low-maintenance composite surfaces or a natural wood aesthetic, we precision-craft every inch to last.
+      </p>
+      <ul>
+        <li>Free, no-obligation quotes customized to your property.</li>
+        <li>Locally compliant permits handled for you.</li>
+        <li>Exceptional warranty on both craftsmanship and materials.</li>
+      </ul>
+    </div>
+    
+    <div class="mt-16 pt-12 border-t border-stone-800 flex justify-between items-center">
+      <a href="/" class="text-stone-400 hover:text-white font-bold uppercase tracking-widest text-sm transition-colors">
+        ← Back to Home
+      </a>
+      <a href="/#quote" class="text-orange-500 hover:text-orange-400 font-bold uppercase tracking-widest text-sm transition-colors flex items-center gap-2">
+        Request Estimate →
+      </a>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

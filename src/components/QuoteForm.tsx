@@ -35,18 +35,28 @@ const QuoteForm = () => {
 
     const initAutocomplete = () => {
       if (window.google && window.google.maps && window.google.maps.places && addressInputRef.current) {
-        const autocomplete = new window.google.maps.places.Autocomplete(addressInputRef.current, {
-          types: ['address'],
+        // Updated to use the new suggested PlaceAutocompleteElement instead of Autocomplete
+        const autocomplete = new window.google.maps.places.PlaceAutocompleteElement({
           componentRestrictions: { country: 'us' }, // Restrict to US
-          fields: ['formatted_address', 'geometry']
         });
 
-        autocomplete.addListener('place_changed', () => {
-          const place = autocomplete.getPlace();
-          if (place.formatted_address) {
-            setFormData(prev => ({ ...prev, address: place.formatted_address }));
-            // Clear address error if exists
-            setValidationErrors(prev => prev.filter(error => error.field !== 'address'));
+        // Hide the default input and append the new element
+        addressInputRef.current.style.display = 'none';
+        addressInputRef.current.parentElement?.appendChild(autocomplete);
+
+        autocomplete.addEventListener('gmp-placeselect', async (e: any) => {
+          const place = e.place;
+          if (!place) return;
+
+          try {
+            await place.fetchFields({ fields: ['formattedAddress'] });
+            if (place.formattedAddress) {
+              setFormData(prev => ({ ...prev, address: place.formattedAddress }));
+              // Clear address error if exists
+              setValidationErrors(prev => prev.filter(error => error.field !== 'address'));
+            }
+          } catch (err) {
+            console.error('Failed to fetch place fields', err);
           }
         });
 
@@ -341,7 +351,7 @@ const QuoteForm = () => {
         {/* Turnstile Widget */}
         <div className="flex justify-center py-2">
           <TurnstileWidget
-            siteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
+            siteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
             onVerify={(token) => {
               console.log('Turnstile verified');
               setTurnstileToken(token);

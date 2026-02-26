@@ -11,9 +11,15 @@ export default defineConfig({
     service: { entrypoint: 'astro/assets/services/noop' }
   },
   vite: {
+    server: {
+      hmr: {
+        port: 24678,
+      }
+    },
     plugins: [tailwindcss()],
     build: {
       target: 'es2022',
+      cssTarget: 'es2022',
       cssMinify: 'lightningcss',
     },
     ssr: {

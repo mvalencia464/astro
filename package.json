@@ -13,6 +13,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.6",
     "@astrojs/cloudflare": "^13.0.0-beta.8",
     "@astrojs/react": "^4.4.2",
     "@tailwindcss/vite": "^4.2.0",
@@ -26,7 +27,9 @@
   "devDependencies": {
     "@types/node": "^22.14.0",
     "lightningcss": "^1.31.1",
+    "miniflare": "^4.20260305.0",
     "sharp": "^0.34.5",
-    "typescript": "^5.8.0"
+    "typescript": "^5.9.3",
+    "wrangler": "^4.69.0"
   }
 }
