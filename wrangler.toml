@@ -4,9 +4,11 @@ compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
-# PUBLIC_TURNSTILE_SITE_KEY should be set in the Cloudflare Dashboard
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAACibBjpNvEOAYivu"
 
-
+[[routes]]
+pattern = "decks.stokeleads.com"
+custom_domain = true
 
 [[kv_namespaces]]
 binding = "SESSION"

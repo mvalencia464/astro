@@ -23,6 +23,10 @@ const heroImageSrc = '/images/hero/002-hero-aerial.webp';
 // Page metadata
 const title = 'DECK MASTERS | Anchorage Premium Decks';
 const description = 'Expert deck builders in Anchorage serving South Anchorage, Hillside & Eagle River. Custom composite & cedar decks engineered for Alaska winters. 25-year warranty. Free quotes.';
+
+// Retrieve Turnstile Site Key from Cloudflare Runtime Environment Variables
+// It falls back to process.env for local development
+const turnstileSiteKey = Astro.locals?.runtime?.env?.PUBLIC_TURNSTILE_SITE_KEY || process.env.PUBLIC_TURNSTILE_SITE_KEY || import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 ---
 
 <BaseLayout title={title} description={description}>
@@ -89,7 +93,7 @@ const description = 'Expert deck builders in Anchorage serving South Anchorage, 
         </div>
 
         <div class="hidden lg:block max-w-md justify-self-end w-full relative group">
-          <QuoteForm client:load />
+          <QuoteForm client:load siteKey={turnstileSiteKey} />
 
           {/* Playful Call-out Arrow */}
           <div class="absolute -left-32 top-10 flex flex-col items-end animate-fade-in-up delay-700 opacity-90 rotate-[-5deg]">

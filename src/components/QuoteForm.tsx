@@ -12,7 +12,11 @@ declare global {
   }
 }
 
-const QuoteForm = () => {
+interface QuoteFormProps {
+  siteKey?: string;
+}
+
+const QuoteForm: React.FC<QuoteFormProps> = ({ siteKey }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -342,7 +346,7 @@ const QuoteForm = () => {
         {/* Turnstile Widget */}
         <div className="flex justify-center py-2">
           <TurnstileWidget
-            siteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+            siteKey={siteKey || import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
             onVerify={(token) => {
               console.log('Turnstile verified');
               setTurnstileToken(token);
