@@ -7,3 +7,7 @@ compatibility_flags = ["nodejs_compat"]
 # PUBLIC_TURNSTILE_SITE_KEY should be set in the Cloudflare Dashboard
 
 
+
+[[kv_namespaces]]
+binding = "SESSION"
+id = "220c7da78bbb4419b978f3276af98d47"

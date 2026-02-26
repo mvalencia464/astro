@@ -5,7 +5,12 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   output: 'server',
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    cloudflareModules: true,
+    platformProxy: {
+      enabled: true
+    }
+  }),
   integrations: [react()],
   image: {
     service: { entrypoint: 'astro/assets/services/noop' }
