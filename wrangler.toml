@@ -15,4 +15,4 @@ binding = "SESSION"
 id = "220c7da78bbb4419b978f3276af98d47"
 
 [images]
-binding = "CF_IMAGES"
+binding = "IMAGES"
