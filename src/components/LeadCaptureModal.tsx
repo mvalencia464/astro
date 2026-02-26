@@ -2,7 +2,13 @@ import React from 'react';
 import { X } from 'lucide-react';
 import QuoteForm from './QuoteForm';
 
-const LeadCaptureModal = ({ isOpen, onClose }) => {
+interface LeadCaptureModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  siteKey?: string;
+}
+
+const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({ isOpen, onClose, siteKey }) => {
   if (!isOpen) return null;
 
   return (
@@ -18,7 +24,7 @@ const LeadCaptureModal = ({ isOpen, onClose }) => {
           <X className="w-6 h-6" />
         </button>
 
-        <QuoteForm />
+        <QuoteForm siteKey={siteKey} />
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 ---
+import { env } from 'cloudflare:workers';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header';
@@ -21,6 +22,9 @@ const { name, region, population, highlight, geoImage } = entry.data;
 
 const description = `Leading premium deck builders in ${name}, ${region}. We specialize in ${highlight}.`;
 const pageTitle = `Deck Builders in ${name}, AK | Deck Masters`;
+
+// Retrieve Turnstile Site Key from Cloudflare Worker Environment Variables
+const turnstileSiteKey = (env as any)?.PUBLIC_TURNSTILE_SITE_KEY || process.env.PUBLIC_TURNSTILE_SITE_KEY || import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 ---
 
 <BaseLayout title={pageTitle} description={description}>
@@ -109,5 +113,5 @@ const pageTitle = `Deck Builders in ${name}, AK | Deck Masters`;
     </div>
   </main>
 
-  <Footer />
+  <Footer siteKey={turnstileSiteKey} />
 </BaseLayout>

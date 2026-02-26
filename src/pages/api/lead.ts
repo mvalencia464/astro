@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
   // Verify request method
   if (request.method !== 'POST') {
     return new Response(
@@ -21,7 +22,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Verify Turnstile token with Cloudflare
-    const secretKey = (locals as any).runtime?.env?.TURNSTILE_SECRET_KEY || process.env.TURNSTILE_SECRET_KEY;
+    const secretKey = (env as any)?.TURNSTILE_SECRET_KEY || process.env.TURNSTILE_SECRET_KEY;
 
     const verifyResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
       method: 'POST',

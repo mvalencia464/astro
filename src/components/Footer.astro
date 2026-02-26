@@ -1,5 +1,11 @@
 ---
 import QuoteForm from './QuoteForm';
+
+interface Props {
+  siteKey?: string;
+}
+
+const { siteKey } = Astro.props;
 ---
 
 <style>
@@ -105,7 +111,7 @@ import QuoteForm from './QuoteForm';
       <!-- Right Section: Quote Form + Testimonials -->
       <div class="lg:w-1/2">
         <!-- Quote Form -->
-        <QuoteForm client:load />
+        <QuoteForm client:load siteKey={siteKey} />
 
         <!-- Footer Testimonials Carousel -->
         <div class="mt-8 h-24 flex flex-col justify-center">
