@@ -48,7 +48,7 @@ export default function Header() {
             <Phone className="w-4 h-4" />
             <span className="font-bold text-xs uppercase tracking-wider">(907) 891-8283</span>
           </a>
-          <button className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 font-display font-bold uppercase tracking-widest transition-colors flex items-center gap-2">
+          <button className="bg-orange-700 hover:bg-orange-600 text-white px-6 py-3 font-display font-bold uppercase tracking-widest transition-colors flex items-center gap-2">
             Get Quote
             <ArrowRight className="w-4 h-4" />
           </button>
@@ -85,7 +85,7 @@ export default function Header() {
               <Phone className="w-4 h-4" />
               (907) 891-8283
             </a>
-            <button className="w-full bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 font-display font-bold uppercase tracking-widest transition-colors flex items-center justify-center gap-2 mt-2">
+            <button className="w-full bg-orange-700 hover:bg-orange-600 text-white px-6 py-3 font-display font-bold uppercase tracking-widest transition-colors flex items-center justify-center gap-2 mt-2">
               Get Quote
               <ArrowRight className="w-4 h-4" />
             </button>

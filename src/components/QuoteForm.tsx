@@ -223,8 +223,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ siteKey }) => {
   return (
     <div className="bg-stone-900 border border-orange-600/30 p-8 rounded-sm w-full shadow-2xl animate-fade-in-up">
       <div className="mb-8 border-b border-orange-600/10 pb-6 text-center">
-        <h3 className="text-2xl font-display font-bold uppercase mb-2">Request Estimate</h3>
-        <p className="text-stone-500 text-xs uppercase tracking-widest font-bold">The No-Surprise Guarantee</p>
+        <h2 className="text-2xl font-display font-bold uppercase mb-2">Request Estimate</h2>
+        <p className="text-stone-400 text-xs uppercase tracking-widest font-bold">The No-Surprise Guarantee</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">
@@ -317,7 +317,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ siteKey }) => {
               required
               className="mt-0.5 w-4 h-4 rounded-sm border-orange-600/50 bg-stone-950 text-orange-600 focus:ring-orange-600 accent-orange-600 transition-all font-bold cursor-pointer"
             />
-            <span className="text-[9px] text-stone-500 leading-snug uppercase tracking-wider">
+            <span className="text-[11px] text-stone-400 leading-snug uppercase tracking-wider">
               By checking this box I agree to Deck Masters' <a href="#/terms" onClick={(e) => { e.preventDefault(); window.location.hash = '#/terms'; }} className="text-orange-600 hover:underline font-bold">Terms</a> &amp; <a href="#/privacy" onClick={(e) => { e.preventDefault(); window.location.hash = '#/privacy'; }} className="text-orange-600 hover:underline font-bold">Privacy Policy</a> and consent to receive SMS messages about my project. Msg &amp; data rates may apply. Reply STOP to opt out. *
             </span>
           </label>
@@ -331,7 +331,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ siteKey }) => {
               required
               className="mt-0.5 w-4 h-4 rounded-sm border-orange-600/50 bg-stone-950 text-orange-600 focus:ring-orange-600 accent-orange-600 transition-all font-bold cursor-pointer"
             />
-            <span className="text-[9px] text-stone-500 leading-snug uppercase tracking-wider">
+            <span className="text-[11px] text-stone-400 leading-snug uppercase tracking-wider">
               I consent to receive recurring automated marketing texts (promos, offers) from Deck Masters. Consent is not required to purchase. Msg frequency varies. Msg &amp; data rates may apply. Reply STOP to cancel. *
             </span>
           </label>
@@ -361,7 +361,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ siteKey }) => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-orange-600 text-white hover:bg-orange-500 py-5 rounded-sm font-bold uppercase text-xs tracking-[0.25em] transition-all shadow-xl shadow-orange-950/40 flex items-center justify-center gap-2 group disabled:opacity-50"
+          className="w-full bg-orange-700 text-white hover:bg-orange-600 py-5 rounded-sm font-bold uppercase text-xs tracking-[0.25em] transition-all shadow-xl shadow-orange-950/40 flex items-center justify-center gap-2 group disabled:opacity-50"
         >
           {isSubmitting ? (
             <>
@@ -377,7 +377,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ siteKey }) => {
         </button>
       </form>
 
-      <p className="text-[10px] text-stone-600 text-center uppercase tracking-widest font-bold mt-4">
+      <p className="text-[10px] text-stone-400 text-center uppercase tracking-widest font-bold mt-4">
         Free Consultation • No Obligation • Locally Owned
       </p>
     </div>
