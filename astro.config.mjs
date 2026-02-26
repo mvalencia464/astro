@@ -14,7 +14,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
     build: {
       target: 'esnext',
-      cssMinify: 'esbuild',
+      cssMinify: 'lightningcss',
     },
     ssr: {
       external: ['lucide-react'],

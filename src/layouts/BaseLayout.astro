@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets'; // Import Image for favicon
+import { ClientRouter } from 'astro:transitions';
 import '../styles/globals.css';
 import favicon from '../assets/favicon.svg'; // Import the favicon
 
@@ -25,6 +26,7 @@ const {
     <meta name="description" content={description} />
     
     <link rel="icon" type="image/svg+xml" href={favicon.src} />
+    <ClientRouter />
     
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-RD2XZW9K8V"></script>
     <script is:inline>
