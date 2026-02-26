@@ -13,7 +13,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     build: {
-      target: 'esnext',
+      target: 'es2022',
       cssMinify: 'lightningcss',
     },
     ssr: {

@@ -3,6 +3,9 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Deck Masters - Anchorage Premium Deck Builder (Astro 6.0)",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
