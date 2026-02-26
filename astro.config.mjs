@@ -10,13 +10,14 @@ export default defineConfig({
   image: {
     service: { entrypoint: 'astro/assets/services/noop' }
   },
-vite: {
+  vite: {
     plugins: [tailwindcss()],
     build: {
       target: 'esnext',
-      cssMinify: 'esbuild', // Change from 'lightningcss' to 'esbuild'
+      cssMinify: 'esbuild',
     },
     ssr: {
       external: ['lucide-react'],
     },
-  },});
+  },
+});

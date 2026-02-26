@@ -341,9 +341,9 @@ const QuoteForm = () => {
         {/* Turnstile Widget */}
         <div className="flex justify-center py-2">
           <TurnstileWidget
-            siteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAACfySnpzI08Ou8wN"}
+            siteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
             onVerify={(token) => {
-              console.log('Turnstile verified with:', import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ? 'Env Var' : 'Fallback Key');
+              console.log('Turnstile verified');
               setTurnstileToken(token);
             }}
             onError={(err) => console.error('Turnstile Error:', err)}
