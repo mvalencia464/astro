@@ -1,16 +1,6 @@
 ---
 
-// import { mapAssetUrl } from '../utils/assetMapper'; // mapAssetUrl now returns metadata object, not just string
-// const testPath = 'portfolio/001-aerial-wraparound.webp';
-// const result = mapAssetUrl(testPath);
 
-// console.log('--- DEBUG START ---');
-// console.log('Searching for:', testPath);
-// console.log('Mapper Result:', result); // This should now display [object Object] for image metadata
-// console.log('--- DEBUG END ---');
-
-
-import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { ArrowRight, Phone, Star, Shield, Hammer } from 'lucide-react';
 import Header from '../components/Header';
@@ -27,8 +17,8 @@ import StickyMobileCTA from '../components/StickyMobileCTA';
 // Data
 import testimonialsData from '../data/testimonials.json';
 
-// Assets
-import heroImage from '../assets/hero/002-hero-aerial.webp';
+// Hero image served from public/ for stable URL (no Vite hashing)
+const heroImageSrc = '/images/hero/002-hero-aerial.webp';
 
 // Page metadata
 const title = 'DECK MASTERS | Anchorage Premium Decks';
@@ -44,7 +34,7 @@ const description = 'Expert deck builders in Anchorage serving South Anchorage, 
     {/* Background Image with Overlay */}
     <div class="absolute inset-0 z-0 bg-stone-900">
       <img
-        src={heroImage.src}
+        src={heroImageSrc}
         alt="Modern Deck in Anchorage"
         class="w-full h-full object-cover opacity-70 scale-105 animate-slow-zoom"
         fetchpriority="high"

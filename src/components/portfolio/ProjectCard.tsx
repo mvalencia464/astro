@@ -1,27 +1,13 @@
 import React from 'react';
-import { Project } from '../../types/portfolio';
-import ResponsiveImage from '../ResponsiveImage';
-import { mapAssetUrl } from '../../utils/assetMapper'; // Import mapAssetUrl
-import type { ImageMetadata } from 'astro'; // Import ImageMetadata type
+import type { Project } from '../../types/portfolio';
 
 interface ProjectCardProps {
   project: Project;
-  // Removed onClick prop as modal functionality is removed
-  onDelete?: (project: Project) => void; // Kept onDelete if it's used elsewhere
+  onDelete?: (project: Project) => void;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onDelete }) => {
-  // Map the afterImage through mapAssetUrl
-  const mappedAfterImage = mapAssetUrl(project.afterImage);
-  const afterImageSrc = typeof mappedAfterImage === 'object' && mappedAfterImage !== null && 'src' in mappedAfterImage
-    ? mappedAfterImage.src
-    : (mappedAfterImage as string || '');
-  const afterImageWidth = typeof mappedAfterImage === 'object' && mappedAfterImage !== null && 'width' in mappedAfterImage
-    ? mappedAfterImage.width
-    : undefined;
-  const afterImageHeight = typeof mappedAfterImage === 'object' && mappedAfterImage !== null && 'height' in mappedAfterImage
-    ? mappedAfterImage.height
-    : undefined;
+  const imageSrc = project.afterImage || project.beforeImage || '';
 
   return (
     <div
@@ -29,16 +15,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onDelete }) => {
       className="group bg-stone-900 rounded-sm overflow-hidden border border-stone-800 hover:border-orange-600 transition-all duration-300 flex flex-col h-full relative" // Removed cursor-pointer
     >
       <div className="relative aspect-[4/3] overflow-hidden">
-         {/* Main Image */}
-         <ResponsiveImage
-           src={afterImageSrc}
-           alt={project.title}
-           className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 opacity-80 group-hover:opacity-100"
-           sizes="(max-width: 640px) 320px, (max-width: 1024px) 640px, 1024px"
-           priority={false}
-           width={afterImageWidth}
-           height={afterImageHeight}
-         />
+        {/* Main Image */}
+        <img
+          src={imageSrc}
+          alt={project.title}
+          className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 opacity-80 group-hover:opacity-100"
+          loading="lazy"
+          decoding="async"
+        />
 
         {/* Removed Interaction Overlay - Card is no longer clickable for modal */}
 

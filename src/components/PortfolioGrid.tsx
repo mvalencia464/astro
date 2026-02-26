@@ -1,26 +1,7 @@
-import React, { useMemo } from 'react';
-import { getPortfolioGallery, type GalleryItem } from '../utils/portfolio';
-import { mapAssetUrl } from '../utils/assetMapper';
-import ResponsiveImage from './ResponsiveImage';
+import React from 'react';
+import GALLERY_DATA from '../data/portfolio-gallery.json';
 
-interface PortfolioGridProps {
-  images?: string[]; // Optional override
-}
-
-export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
-  // Use centralized gallery data or the provided override
-  const galleryItems = useMemo(() => {
-    if (images) {
-      // If manual image list provided, map them using the same logic
-      return images.map((src, index) => ({
-        src,
-        caption: `Project Image ${index + 1}`,
-        metadata: mapAssetUrl(src)
-      }));
-    }
-    return getPortfolioGallery();
-  }, [images]);
-
+export const PortfolioGrid: React.FC = () => {
   return (
     <section className="py-24 bg-stone-900 relative overflow-hidden">
       {/* Decorative border at top */}
@@ -46,35 +27,24 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
 
         {/* Image Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-[250px]">
-          {galleryItems.map((item, index) => {
-            const asset = item.metadata;
-            // Extract src, width, height from the asset (ImageMetadata or string)
-            const src = typeof asset === 'object' && asset !== null && 'src' in asset ? asset.src : (asset as string || '');
-            const width = typeof asset === 'object' && asset !== null && 'width' in asset ? asset.width : undefined;
-            const height = typeof asset === 'object' && asset !== null && 'height' in asset ? asset.height : undefined;
-
-            return (
-              <div
-                key={index}
-                className="relative group overflow-hidden rounded-sm bg-stone-800"
-              >
-                <ResponsiveImage
-                  src={src}
-                  alt={item.caption}
-                  width={width}
-                  height={height}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  containerClassName="absolute inset-0 w-full h-full"
-                  sizes="(max-width: 640px) 320px, (max-width: 1024px) 640px, (max-width: 1440px) 1024px, 640px"
-                  priority={false}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <p className="text-white text-xs font-semibold leading-tight">{item.caption}</p>
-                </div>
+          {GALLERY_DATA.map((item, index) => (
+            <div
+              key={index}
+              className="relative group overflow-hidden rounded-sm bg-stone-800"
+            >
+              <img
+                src={item.src}
+                alt={item.caption}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                loading={index < 6 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                <p className="text-white text-xs font-semibold leading-tight">{item.caption}</p>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
     </section>
