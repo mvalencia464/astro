@@ -8,6 +8,8 @@ interface ResponsiveImageProps {
   sizes?: string;
   priority?: boolean;
   onLoad?: () => void;
+  width?: number;
+  height?: number;
 }
 
 /**
@@ -33,6 +35,8 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   sizes = '(max-width: 640px) 320px, (max-width: 1024px) 640px, (max-width: 1440px) 1024px, 1440px',
   priority = false,
   onLoad,
+  width,
+  height,
 }) => {
   const [hasError, setHasError] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -78,12 +82,14 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
         srcSet={srcSet}
         sizes={srcSet ? sizes : undefined}
         alt={alt}
+        width={width}
+        height={height}
         className={`${className}`}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
         // The image itself will handle its visibility once loaded by the browser.
         // We ensure onLoad prop is still called and error state is set.
-        onLoad={() => { onLoad?.(); console.log('IMAGE LOADED:', src); }}
+        onLoad={() => { onLoad?.(); }}
         onError={() => { setHasError(true); console.error('IMAGE ERROR:', src); }}
       />
       {hasError && (

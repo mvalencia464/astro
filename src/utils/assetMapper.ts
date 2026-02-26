@@ -1,22 +1,30 @@
 import type { ImageMetadata } from 'astro';
 
-// Combined glob for all authorized assets (excluding video which is now in public)
+// Use relative paths for glob to ensure Vite resolves them correctly
 const allAssets = import.meta.glob<{ default: ImageMetadata | string }>(
-  '/src/assets/{portfolio,testimonials}/**/*.{webp,jpg,jpeg,png,svg}', 
+  '../assets/**/*.{webp,jpg,jpeg,png,svg}', 
   { eager: true }
 );
 
 function getAssetMetadataByPath(relativePath: string): ImageMetadata | string | undefined {
-  // Normalize the path to match glob keys (/src/assets/...)
-  const fullPath = `/src/assets/${relativePath.replace(/^\//, '')}`;
+  if (!relativePath) return undefined;
 
-  // 1. Try exact match
-  if (allAssets[fullPath]) {
-    return allAssets[fullPath].default;
-  }
+  // Normalize path: remove leading slashes and leading 'assets/' or 'src/assets/'
+  const normalizedPath = relativePath
+    .replace(/^\//, '')
+    .replace(/^src\/assets\//, '')
+    .replace(/^assets\//, '');
 
-  // 2. Try suffix match (handles cases where relativePath is missing leading folders)
-  const foundKey = Object.keys(allAssets).find(key => key.endsWith(relativePath));
+  // 1. Try exact match with normalized path suffixes
+  const keys = Object.keys(allAssets);
+  
+  // Try to find a key that ends with the normalized path
+  // Vite keys usually look like '../assets/portfolio/image.webp' or '/src/assets/portfolio/image.webp'
+  const foundKey = keys.find(key => {
+    const normalizedKey = key.replace(/^\.\.\/assets\//, '').replace(/^\/src\/assets\//, '');
+    return normalizedKey === normalizedPath || key.endsWith(normalizedPath);
+  });
+
   if (foundKey) {
     return allAssets[foundKey].default;
   }
@@ -24,23 +32,28 @@ function getAssetMetadataByPath(relativePath: string): ImageMetadata | string | 
   return undefined;
 }
 
-export function mapAssetUrl(url: string): ImageMetadata | string | undefined {
+export function mapAssetUrl(url: string | any): ImageMetadata | string | undefined {
   if (!url) return undefined;
+  
+  // If it's already an ImageMetadata object (has src property)
+  if (typeof url === 'object' && url !== null && 'src' in url) {
+    return url;
+  }
 
   // Bypass for remote URLs
-  if (url.startsWith('http')) return url;
+  if (typeof url === 'string' && url.startsWith('http')) return url;
 
   // Handle video paths directly from public directory
-  if (url.startsWith('testimonials/videos/')) {
+  if (typeof url === 'string' && url.startsWith('testimonials/videos/')) {
     return `/assets/${url}`;
   }
 
   // Strip public-style prefix if present
-  const cleanPath = url.startsWith('/assets/') ? url.substring(8) : url;
+  const cleanPath = typeof url === 'string' && url.startsWith('/assets/') ? url.substring(8) : url;
 
-  return getAssetMetadataByPath(cleanPath);
+  return getAssetMetadataByPath(cleanPath as string);
 }
 
-export const isExternalUrl = (url: string) => url.startsWith('http');
+export const isExternalUrl = (url: string) => typeof url === 'string' && url.startsWith('http');
 
 export default { mapAssetUrl, isExternalUrl };

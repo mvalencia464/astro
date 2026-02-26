@@ -1,31 +1,25 @@
-import React, { useMemo } from 'react'; // Removed useState, useEffect
-// Removed X, ChevronLeft, ChevronRight as they are for the lightbox
+import React, { useMemo } from 'react';
+import { getPortfolioGallery, type GalleryItem } from '../utils/portfolio';
 import { mapAssetUrl } from '../utils/assetMapper';
 import ResponsiveImage from './ResponsiveImage';
-import { PORTFOLIO_GALLERY } from '../constants/portfolio';
-import type { ImageMetadata } from 'astro';
 
 interface PortfolioGridProps {
-  images?: string[];
+  images?: string[]; // Optional override
 }
 
 export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
-  // Removed selectedImageMetadata, setCurrentImageIndex states
-
-  // Map image URLs to their metadata objects or external strings
-  const mappedPortfolioAssets = useMemo(() => {
-    const sourceImages = images || PORTFOLIO_GALLERY.map(item => item.src);
-    return sourceImages.map(url => mapAssetUrl(url));
+  // Use centralized gallery data or the provided override
+  const galleryItems = useMemo(() => {
+    if (images) {
+      // If manual image list provided, map them using the same logic
+      return images.map((src, index) => ({
+        src,
+        caption: `Project Image ${index + 1}`,
+        metadata: mapAssetUrl(src)
+      }));
+    }
+    return getPortfolioGallery();
   }, [images]);
-
-  // Removed portfolioImageSources as it was primarily for preloading in the modal
-
-  const getCaption = (index: number) => {
-    if (images) return `Project Image ${index + 1}`;
-    return PORTFOLIO_GALLERY[index]?.caption || '';
-  };
-
-  // Removed handleImageClick, preloadAdjacentImages, handleNextImage, handlePrevImage, useEffect for keyboard navigation
 
   return (
     <section className="py-24 bg-stone-900 relative overflow-hidden">
@@ -52,7 +46,8 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
 
         {/* Image Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-[250px]">
-          {mappedPortfolioAssets.map((asset, index) => {
+          {galleryItems.map((item, index) => {
+            const asset = item.metadata;
             // Extract src, width, height from the asset (ImageMetadata or string)
             const src = typeof asset === 'object' && asset !== null && 'src' in asset ? asset.src : (asset as string || '');
             const width = typeof asset === 'object' && asset !== null && 'width' in asset ? asset.width : undefined;
@@ -61,33 +56,27 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ images }) => {
             return (
               <div
                 key={index}
-                // Removed onClick handler as modal functionality is removed
-                className="relative group overflow-hidden rounded-sm bg-stone-800" // Removed cursor-pointer
+                className="relative group overflow-hidden rounded-sm bg-stone-800"
               >
-                {/* ResponsiveImage is read-only. We pass src, width, and height. */}
-                {/* It's assumed ResponsiveImage internally uses an <img> tag and applies these props. */}
                 <ResponsiveImage
                   src={src}
-                  alt={getCaption(index)}
+                  alt={item.caption}
+                  width={width}
+                  height={height}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   containerClassName="absolute inset-0 w-full h-full"
                   sizes="(max-width: 640px) 320px, (max-width: 1024px) 640px, (max-width: 1440px) 1024px, 640px"
                   priority={false}
-                  // Pass width and height to ResponsiveImage component
-                  {...(width && { width })}
-                  {...(height && { height })}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <p className="text-white text-xs font-semibold leading-tight">{getCaption(index)}</p>
+                  <p className="text-white text-xs font-semibold leading-tight">{item.caption}</p>
                 </div>
               </div>
             );
           })}
         </div>
       </div>
-
-      {/* Removed Image Lightbox */}
     </section>
   );
 };
