@@ -1,10 +1,33 @@
 @import "tailwindcss";
 
+/* Self-hosted variable fonts */
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-VariableFont_opsz,wght.woff2") format("woff2");
+  font-weight: 100 900;
+  font-variation-settings: "opsz" auto;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Oswald";
+  src: url("/fonts/Oswald-VariableFont_wght.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Caveat";
+  src: url("/fonts/Caveat-VariableFont_wght.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 @theme {
-  /* Fonts - matches your Google Font imports */
-  --font-sans: "Inter", ui-sans-serif, system-ui;
-  --font-display: "Oswald", sans-serif;
-  --font-handwriting: "Caveat", cursive;
+  /* Fonts with Impact fallback */
+  --font-sans: "Inter", Impact, ui-sans-serif, system-ui;
+  --font-display: "Oswald", Impact, sans-serif;
+  --font-handwriting: "Caveat", Impact, cursive;
 
   /* Colors - matches your brand code */
   --color-orange-600: #ea580c;
