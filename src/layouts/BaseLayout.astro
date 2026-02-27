@@ -3,17 +3,26 @@ import { Image } from 'astro:assets'; // Import Image for favicon
 import { ClientRouter } from 'astro:transitions';
 import '../styles/globals.css';
 import favicon from '../assets/favicon.svg'; // Import the favicon
+import LocalSEO from '../components/LocalSEO.astro';
 
 interface Props {
-  title: string;
+  title?: string;
   description?: string;
   ogImage?: string;
+  serviceName?: string;
+  cityName?: string;
+  region?: string;
+  canonical?: string;
 }
 
 const { 
   title, 
-  description = "Expert deck builders in Anchorage serving South Anchorage, Hillside & Eagle River. Custom composite & cedar decks engineered for Alaska winters.", 
-  ogImage 
+  description,
+  ogImage,
+  serviceName,
+  cityName,
+  region,
+  canonical
 } = Astro.props;
 ---
 
@@ -22,8 +31,15 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    
+    <LocalSEO 
+      title={title} 
+      description={description} 
+      serviceName={serviceName} 
+      cityName={cityName} 
+      region={region} 
+      canonical={canonical} 
+    />
     
     <link rel="icon" type="image/svg+xml" href={favicon.src} />
     <ClientRouter />

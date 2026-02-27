@@ -3,6 +3,7 @@ title: 'Custom Deck Construction Anchorage | Expert Builders'
 description: 'Premium deck construction in Anchorage designed for Alaska winters.'
 city: 'Anchorage'
 serviceName: 'Deck Construction'
+category: 'new-deck-construction'
 ---
 
 # Expert Custom Deck Construction in Anchorage, Alaska

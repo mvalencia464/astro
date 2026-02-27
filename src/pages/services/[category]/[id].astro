@@ -1,9 +1,9 @@
 ---
 import { env } from 'cloudflare:workers';
 import { getCollection, render } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
 
 export const prerender = true;
 
@@ -11,7 +11,10 @@ export const prerender = true;
 export async function getStaticPaths() {
   const services = await getCollection('services');
   return services.map(entry => ({
-    params: { id: entry.id },
+    params: { 
+      category: entry.data.category,
+      id: entry.id 
+    },
     props: { entry },
   }));
 }
@@ -24,8 +27,13 @@ const { Content } = await render(entry);
 const turnstileSiteKey = (env as any)?.PUBLIC_TURNSTILE_SITE_KEY || process.env.PUBLIC_TURNSTILE_SITE_KEY || import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 ---
 
-<BaseLayout title={entry.data.title} description={entry.data.description}>
-  <Header client:load />
+<BaseLayout 
+  title={entry.data.title} 
+  description={entry.data.description}
+  serviceName={entry.data.serviceName}
+  cityName={entry.data.city}
+>
+  <Header />
   
   <main class="max-w-4xl mx-auto px-6 py-32">
     <article class="prose prose-stone prose-invert lg:prose-xl mx-auto">

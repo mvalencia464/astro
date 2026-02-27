@@ -1,0 +1,73 @@
+---
+import { ChevronDown } from "lucide-react";
+
+interface FAQItem {
+  id: string;
+  question: string;
+  answer: string;
+  category?: string;
+}
+
+interface Props {
+  items: FAQItem[];
+  title?: string;
+  subtitle?: string;
+  category?: string;
+  className?: string;
+}
+
+const {
+  items,
+  title = "Frequently Asked Questions",
+  subtitle,
+  className = "",
+} = Astro.props;
+---
+
+<section class={`py-20 px-6 bg-stone-950 border-t border-stone-800 ${className}`}>
+  <div class="max-w-4xl mx-auto">
+    <div class="mb-16">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="h-[1px] w-12 bg-orange-600" />
+        <span class="text-orange-500 font-bold uppercase tracking-[0.3em] text-sm">FAQ</span>
+      </div>
+      <h2 class="text-4xl md:text-5xl font-display font-bold uppercase text-white mb-4">
+        {title}
+      </h2>
+      {subtitle && <p class="text-stone-400 text-lg max-w-2xl">{subtitle}</p>}
+    </div>
+
+    <div class="space-y-3">
+      {items.map((item) => (
+        <details class="group border border-stone-800 overflow-hidden hover:border-orange-600/50 transition-colors duration-300">
+          <summary class="list-none w-full px-6 py-5 flex items-start justify-between gap-4 bg-stone-900/50 hover:bg-stone-900 transition-colors text-left cursor-pointer appearance-none [&::-webkit-details-marker]:hidden">
+            <span class="text-base md:text-lg font-semibold text-white flex-1">
+              {item.question}
+            </span>
+            <ChevronDown
+              className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5 transition-transform duration-300 group-open:rotate-180"
+            />
+          </summary>
+
+          <div class="px-6 py-5 bg-stone-900 border-t border-stone-800 animate-fade-in">
+            <div class="text-stone-400 leading-relaxed space-y-3">
+              {item.answer.split("\n\n").map((paragraph) => (
+                <p>{paragraph}</p>
+              ))}
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Extra safety for marker removal */
+  summary {
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

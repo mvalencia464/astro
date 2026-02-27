@@ -1,0 +1,113 @@
+---
+import { Menu, X, Phone, ArrowRight } from 'lucide-react';
+
+const navLinks = [
+  { label: 'Home', href: '/' },
+  { label: 'Portfolio', href: '#portfolio' },
+  { label: 'Reviews', href: '#reviews' },
+  { label: 'Process', href: '#process' },
+  { label: 'Services', href: '#services' },
+];
+---
+
+<header id="main-header" class="fixed top-0 left-0 right-0 z-50 bg-stone-950/95 backdrop-blur-lg border-b border-stone-800">
+  <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+    {/* Logo */}
+    <div class="flex items-center gap-2">
+      <a href="/" class="text-2xl font-bold font-display text-white uppercase tracking-tighter">
+        Deck<span class="text-orange-600">Masters</span>
+      </a>
+    </div>
+
+    {/* Desktop Navigation */}
+    <nav class="hidden md:flex items-center gap-8">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class="text-stone-400 hover:text-white font-bold uppercase text-xs tracking-widest transition-colors duration-300"
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    {/* Desktop CTA */}
+    <div class="hidden md:flex items-center gap-4">
+      <a
+        href="tel:+19078918283"
+        class="flex items-center gap-2 text-stone-400 hover:text-orange-500 transition-colors"
+      >
+        <Phone className="w-4 h-4" />
+        <span class="font-bold text-xs uppercase tracking-wider">(907) 891-8283</span>
+      </a>
+      <a href="#quote-form" class="bg-orange-700 hover:bg-orange-600 text-white px-6 py-3 font-display font-bold uppercase tracking-widest transition-colors flex items-center gap-2">
+        Get Quote
+        <ArrowRight className="w-4 h-4" />
+      </a>
+    </div>
+
+    {/* Mobile Menu Button */}
+    <button
+      id="menu-toggle"
+      class="md:hidden text-white p-2 hover:bg-stone-800 rounded transition-colors"
+      aria-label="Toggle Menu"
+    >
+      <div id="menu-icon-container">
+        <Menu className="w-6 h-6" />
+      </div>
+      <div id="close-icon-container" class="hidden">
+        <X className="w-6 h-6" />
+      </div>
+    </button>
+  </div>
+
+  {/* Mobile Navigation */}
+  <div id="mobile-menu" class="hidden md:hidden border-t border-stone-800 bg-stone-950 py-4">
+    <nav class="container mx-auto px-6 flex flex-col gap-4">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class="text-stone-400 hover:text-white font-bold uppercase text-xs tracking-widest transition-colors py-2 mobile-link"
+        >
+          {link.label}
+        </a>
+      ))}
+      <hr class="border-stone-800 my-2" />
+      <a
+        href="tel:+19078918283"
+        class="flex items-center gap-2 text-orange-500 font-bold uppercase text-xs tracking-widest py-2"
+      >
+        <Phone className="w-4 h-4" />
+        (907) 891-8283
+      </a>
+      <a href="#quote-form" class="w-full bg-orange-700 hover:bg-orange-600 text-white px-6 py-3 font-display font-bold uppercase tracking-widest transition-colors flex items-center justify-center gap-2 mt-2 mobile-link">
+        Get Quote
+        <ArrowRight className="w-4 h-4" />
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const menuIcon = document.getElementById('menu-icon-container');
+  const closeIcon = document.getElementById('close-icon-container');
+  const mobileLinks = document.querySelectorAll('.mobile-link');
+
+  function toggleMenu() {
+    mobileMenu?.classList.toggle('hidden');
+    menuIcon?.classList.toggle('hidden');
+    closeIcon?.classList.toggle('hidden');
+  }
+
+  menuToggle?.addEventListener('click', toggleMenu);
+
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu?.classList.add('hidden');
+      menuIcon?.classList.remove('hidden');
+      closeIcon?.classList.add('hidden');
+    });
+  });
+</script>

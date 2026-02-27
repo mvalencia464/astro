@@ -1,0 +1,60 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  serviceName?: string;
+  cityName?: string;
+  region?: string;
+  canonical?: string;
+}
+
+const { 
+  title, 
+  description, 
+  serviceName = "Deck Building", 
+  cityName = "Anchorage",
+  region = "Alaska",
+  canonical 
+} = Astro.props;
+
+const siteName = "Deck Masters";
+const fullTitle = title || `${serviceName} in ${cityName}, ${region} | ${siteName}`;
+const fullDescription = description || `Professional ${serviceName.toLowerCase()} in ${cityName}. Engineered for the ${region} climate with a 25-year warranty. Free estimates.`;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": siteName,
+  "image": "https://deckmastersak.com/logo.png",
+  "@id": "https://deckmastersak.com",
+  "url": "https://deckmastersak.com",
+  "telephone": "(907) 782-4043",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "625 W 59th Ave Unit J",
+    "addressLocality": "Anchorage",
+    "addressRegion": "AK",
+    "postalCode": "99518",
+    "addressCountry": "US"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 61.1676417,
+    "longitude": -149.8942242
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": cityName
+  }
+};
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={fullDescription} />
+{canonical && <link rel="canonical" href={canonical} />}
+
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={fullDescription} />
+<meta property="og:type" content="website" />
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

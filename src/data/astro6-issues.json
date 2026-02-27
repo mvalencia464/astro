@@ -1,0 +1,260 @@
+{
+  "issues": [
+    {
+      "id": "typescript-strictness",
+      "title": "TypeScript Parameter Type Errors",
+      "category": "TypeScript & Type Safety",
+      "severity": "critical",
+      "status": "solved",
+      "symptom": "npx astro check fails with 'implicitly has an any type' errors",
+      "description": "Astro 6 enforces strict TypeScript checking by default. Function parameters and component props must have explicit type annotations.",
+      "solution": "Explicitly annotate all function parameters and component props with their types.",
+      "codeExample": {
+        "before": "export function parseMarkdown(text) {\n  return marked.parse(text);\n}",
+        "after": "export function parseMarkdown(text: string): string {\n  return marked.parse(text);\n}"
+      },
+      "docLink": "https://docs.astro.build/en/guides/typescript/#strict-type-checking",
+      "notes": "Review all utility functions and components during migration."
+    },
+    {
+      "id": "lightningcss-target",
+      "title": "LightningCSS Unsupported Target",
+      "category": "Build & Configuration",
+      "severity": "critical",
+      "status": "solved",
+      "symptom": "Build fails with '[ERROR] [vite] ✗ Build failed: Unsupported target \"es2024\"'",
+      "description": "Astro 6 upgrades to Vite 6, which uses LightningCSS for CSS minification. LightningCSS doesn't support es2024 target yet.",
+      "solution": "Override cssTarget in astro.config.mjs to es2022, even if .browserslistrc targets es2024.",
+      "codeExample": {
+        "before": "// No vite.build override",
+        "after": "export default defineConfig({\n  vite: {\n    build: {\n      target: 'es2022',\n      cssTarget: 'es2022',\n      cssMinify: 'lightningcss',\n    }\n  }\n});"
+      },
+      "docLink": "https://docs.astro.build/en/reference/configuration-reference/#vitebuild",
+      "notes": "This is a Vite 6 + LightningCSS limitation. Monitor for LightningCSS updates."
+    },
+    {
+      "id": "squoosh-deprecated",
+      "title": "Squoosh Image Service Removed",
+      "category": "Images & Assets",
+      "severity": "critical",
+      "status": "solved",
+      "symptom": "Error when trying to use squooshImageService() in config or Image component fails",
+      "description": "Astro 6 completely removed the Squoosh image service. It's no longer available as a built-in option.",
+      "solution": "Switch to sharp (built-in) or noop for CDN-based image handling. We use noop + Cloudflare Image Resizing.",
+      "codeExample": {
+        "before": "import { squooshImageService } from 'astro/config';\nexport default defineConfig({\n  image: { service: squooshImageService() }\n});",
+        "after": "export default defineConfig({\n  image: { service: { entrypoint: 'astro/assets/services/noop' } }\n});"
+      },
+      "docLink": "https://docs.astro.build/en/guides/images/#configure-the-image-service",
+      "notes": "We handle resizing via Cloudflare Workers, so noop is appropriate for our setup."
+    },
+    {
+      "id": "vite-hashing-assets",
+      "title": "Vite Hashing Breaks Static Asset URLs",
+      "category": "Images & Assets",
+      "severity": "high",
+      "status": "solved",
+      "symptom": "Images in public/ folder have hash appended (e.g., image.jpg?v=abc123), breaking hardcoded URLs",
+      "description": "Vite 6 hashes assets by default. For images served from public/, we need stable, predictable URLs.",
+      "solution": "Move images to public/ directory. Astro treats public/ as static, not subject to Vite hashing.",
+      "codeExample": {
+        "before": "src/assets/portfolio/image.jpg → hashed during build",
+        "after": "public/images/portfolio/image.jpg → stable URL: /images/portfolio/image.jpg"
+      },
+      "docLink": "https://docs.astro.build/en/guides/assets/",
+      "notes": "public/ is the recommended location for static assets in Astro."
+    },
+    {
+      "id": "cloudflare-bindings",
+      "title": "Cloudflare Bindings & Environment Access",
+      "category": "Build & Configuration",
+      "severity": "critical",
+      "status": "solved",
+      "symptom": "Astro.locals.runtime is undefined or deprecated in Astro 6",
+      "description": "Astro 6 + Cloudflare adapter uses Vite's Environment API. Old Astro.locals.runtime approach is deprecated.",
+      "solution": "Access bindings directly via Astro context without using Astro.locals.runtime. Configure in astro.config.mjs with cloudflare adapter.",
+      "codeExample": {
+        "before": "const { runtime } = Astro.locals;\nconst kv = runtime.env.KV_NAMESPACE;",
+        "after": "const { IMAGES, KV_NAMESPACE } = Astro.locals.runtime.env;\n// Or access via context in middleware/actions"
+      },
+      "docLink": "https://docs.astro.build/en/guides/integrations-guide/cloudflare/",
+      "notes": "Ensure astro.config.mjs has output: 'server' and cloudflare adapter configured."
+    },
+    {
+      "id": "missing-imports-ssr",
+      "title": "Missing Imports in SSR Context",
+      "category": "TypeScript & Type Safety",
+      "severity": "high",
+      "status": "solved",
+      "symptom": "500 error at runtime: 'function is not defined' in SSR pages",
+      "description": "SSR components fail silently if imports are missing or circular dependencies exist.",
+      "solution": "Verify all imports are present and correct in SSR pages. Check for missing React, component utilities, or data imports.",
+      "codeExample": {
+        "before": "// Missing import\n<Component client:load />",
+        "after": "import Component from '../components/Component.astro';\n<Component client:load />"
+      },
+      "docLink": "https://docs.astro.build/en/guides/ssr/",
+      "notes": "Use astro check to catch import errors before deployment."
+    },
+    {
+      "id": "glob-imports",
+      "title": "Astro.glob() Deprecated",
+      "category": "Imports & Module Resolution",
+      "severity": "high",
+      "status": "solved",
+      "symptom": "Warning or error when using Astro.glob() in components",
+      "description": "Astro.glob() is deprecated in favor of import.meta.glob() which is native ES modules.",
+      "solution": "Replace all Astro.glob() calls with import.meta.glob(). Behavior is largely the same.",
+      "codeExample": {
+        "before": "const posts = await Astro.glob('../pages/blog/*.md');",
+        "after": "const postModules = import.meta.glob('../pages/blog/*.md', { eager: true });\nconst posts = Object.values(postModules);"
+      },
+      "docLink": "https://docs.astro.build/en/guides/imports/#importmetaglob",
+      "notes": "import.meta.glob is the standard ES modules approach."
+    },
+    {
+      "id": "content-layer-api",
+      "title": "Content Collections Require Explicit Loader",
+      "category": "Imports & Module Resolution",
+      "severity": "high",
+      "status": "potential",
+      "symptom": "Content collection doesn't load; data is undefined or collection not recognized",
+      "description": "Astro 5+ deprecates implicit collections in src/content/. Content Layer API requires explicit loaders.",
+      "solution": "Define all collections in src/content.config.ts with explicit loaders (glob, file, etc.)",
+      "codeExample": {
+        "before": "// src/content/config.ts\nexport const collections = {\n  blog: defineCollection({ schema: z.object(...) })\n};",
+        "after": "// src/content.config.ts\nexport const collections = {\n  blog: defineCollection({\n    loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),\n    schema: z.object(...)\n  })\n};"
+      },
+      "docLink": "https://docs.astro.build/en/guides/content-collections/",
+      "notes": "Filename changed from config.ts to content.config.ts. Monitor deprecation warnings."
+    },
+    {
+      "id": "script-inline-conditional",
+      "title": "Conditional Scripts Need is:inline",
+      "category": "Astro Components",
+      "severity": "medium",
+      "status": "potential",
+      "symptom": "Conditional scripts don't execute; script runs when it shouldn't or vice versa",
+      "description": "Astro 6 changed default script behavior. Conditionally rendered scripts are no longer implicitly inlined.",
+      "solution": "Add is:inline directive to scripts that are conditionally rendered.",
+      "codeExample": {
+        "before": "{condition && <script>console.log('x')</script>}",
+        "after": "{condition && <script is:inline>console.log('x')</script>}"
+      },
+      "docLink": "https://docs.astro.build/en/reference/directives-reference/#isinline",
+      "notes": "Only necessary for conditionally rendered scripts, not all scripts."
+    },
+    {
+      "id": "form-actions-redirect",
+      "title": "Form Actions No Longer Auto-Redirect",
+      "category": "Forms & Actions",
+      "severity": "high",
+      "status": "potential",
+      "symptom": "Form submission doesn't redirect; data persists across page reloads (4KB cookie limit)",
+      "description": "Astro 6 removes cookie-forwarding for form actions. Standard POST behavior applies instead.",
+      "solution": "Implement custom session storage using Cloudflare KV (Astro.session) or handle POST response directly.",
+      "codeExample": {
+        "before": "export const actions = {\n  submitForm: async (formData) => {\n    // Astro used to forward this via cookie redirect\n    return Astro.redirect('/success');\n  }\n};",
+        "after": "export const actions = {\n  submitForm: async (formData) => {\n    // Store in KV or return result directly\n    const result = await saveToKV(formData);\n    return { success: true, message: 'Saved' };\n  }\n};"
+      },
+      "docLink": "https://docs.astro.build/en/guides/actions/",
+      "notes": "For persistence across redirects, use Cloudflare KV or Astro.session."
+    },
+    {
+      "id": "css-404-fonts",
+      "title": "CSS & Font 404 Errors",
+      "category": "CSS & Styling",
+      "severity": "high",
+      "status": "solved",
+      "symptom": "Fonts or CSS files return 404; styles don't load; unstyled page",
+      "description": "Middleware or routing rules interfere with asset delivery. Font paths or CSS imports are blocked.",
+      "solution": "Simplify middleware to exclude assets. Ensure CSS import paths are correct relative to component.",
+      "codeExample": {
+        "before": "// middleware blocks all requests\nexport const onRequest: MiddlewareHandler = async (context, next) => {\n  return context.rewrite(new Request(...));\n};",
+        "after": "export const onRequest: MiddlewareHandler = async (context, next) => {\n  if (context.request.url.includes('/static/') || context.request.url.includes('.css')) {\n    return next();\n  }\n  // ... custom logic\n};"
+      },
+      "docLink": "https://docs.astro.build/en/guides/middleware/",
+      "notes": "Always whitelist static assets and CSS in middleware."
+    },
+    {
+      "id": "turnstile-widget",
+      "title": "Turnstile Widget Not Rendering",
+      "category": "Forms & Actions",
+      "severity": "medium",
+      "status": "solved",
+      "symptom": "Cloudflare Turnstile widget doesn't appear; form submission fails CAPTCHA validation",
+      "description": "Turnstile requires site key to be set correctly and accessible to frontend. Fallback or missing key causes silent failure.",
+      "solution": "Ensure PUBLIC_TURNSTILE_SITE_KEY env var is set. Provide fallback key. Propagate to all parent components.",
+      "codeExample": {
+        "before": "// Missing or hardcoded testing key\nconst siteKey = 'test_key_always';",
+        "after": "const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || process.env.PUBLIC_TURNSTILE_SITE_KEY;\nif (!siteKey) console.warn('Turnstile site key not configured');"
+      },
+      "docLink": "https://developers.cloudflare.com/turnstile/get-started/",
+      "notes": "Use PUBLIC_ prefix for client-side env vars. Test with both production and testing keys."
+    },
+    {
+      "id": "image-binding-ssr",
+      "title": "Image Binding Name Mismatch",
+      "category": "Images & Assets",
+      "severity": "high",
+      "status": "solved",
+      "symptom": "500 error or image endpoints fail; binding is undefined in SSR context",
+      "description": "Cloudflare KV binding name in wrangler.toml doesn't match code usage (e.g., 'IMAGES' vs 'IMAGE_STORE').",
+      "solution": "Ensure wrangler.toml and code both reference the same binding name. Update astro.config.mjs accordingly.",
+      "codeExample": {
+        "before": "// wrangler.toml\n[[kv_namespaces]]\nbinding = \"IMAGE_STORE\"\n\n// code\nconst images = Astro.locals.runtime.env.IMAGES;",
+        "after": "// wrangler.toml\n[[kv_namespaces]]\nbinding = \"IMAGES\"\n\n// code\nconst images = Astro.locals.runtime.env.IMAGES;"
+      },
+      "docLink": "https://docs.astro.build/en/guides/integrations-guide/cloudflare/",
+      "notes": "Keep binding names consistent across all config files."
+    },
+    {
+      "id": "performance-infinite-scroll",
+      "title": "Page Size & Performance Optimization",
+      "category": "Performance",
+      "severity": "medium",
+      "status": "solved",
+      "symptom": "Page loads slowly; large bundle size; excessive initial renders",
+      "description": "Loading all content at once causes performance issues. Images aren't optimized for different screen sizes.",
+      "solution": "Implement infinite scroll, lazy loading, aggressive image compression, and Cloudflare image resizing.",
+      "codeExample": {
+        "before": "// Load all items\nconst allItems = await fetch('/api/items?limit=unlimited');",
+        "after": "// Lazy load with pagination\nconst items = await fetch('/api/items?limit=20&offset=0');\n// Image optimization\n<img src={`${img}?format=webp&width=400`} loading=\"lazy\" />"
+      },
+      "docLink": "https://docs.astro.build/en/guides/images/",
+      "notes": "Use Cloudflare Image Resizing for on-the-fly optimization. Implement pagination or infinite scroll."
+    },
+    {
+      "id": "wrangler-config-sync",
+      "title": "wrangler.toml & astro.config.mjs Sync",
+      "category": "Build & Configuration",
+      "severity": "medium",
+      "status": "solved",
+      "symptom": "Production settings differ from local; bindings not available; routing rules mismatched",
+      "description": "Configuration drifts between wrangler.toml and astro.config.mjs, causing dev/prod parity issues.",
+      "solution": "Keep both files in sync. Document shared settings (routes, bindings, site key). Review before deployment.",
+      "codeExample": {
+        "before": "// astro.config.mjs uses 'dev.example.com', wrangler.toml uses 'example.com'",
+        "after": "// Both reference same route and environment variables\n// astro.config.mjs reads from wrangler.toml when possible"
+      },
+      "docLink": "https://docs.astro.build/en/guides/integrations-guide/cloudflare/",
+      "notes": "Use comments in both files to track sync status. Version control both files."
+    },
+    {
+      "id": "accessibility-improvements",
+      "title": "Accessibility & Semantic HTML",
+      "category": "Frontend Quality",
+      "severity": "low",
+      "status": "solved",
+      "symptom": "Color contrast issues; missing alt text; broken heading hierarchy; missing aria-labels",
+      "description": "Astro 6 encourages stricter accessibility standards. Unsemantic HTML causes issues for screen readers.",
+      "solution": "Add proper heading hierarchy, ARIA labels, alt text, and ensure color contrast meets WCAG standards.",
+      "codeExample": {
+        "before": "<div class=\"heading\">Title</div>\n<img src=\"photo.jpg\" />",
+        "after": "<h1>Title</h1>\n<img src=\"photo.jpg\" alt=\"Description of image\" aria-label=\"relevant context\" />"
+      },
+      "docLink": "https://docs.astro.build/en/guides/accessibility/",
+      "notes": "Use axe DevTools or similar to audit. Test with screen readers."
+    }
+  ]
+}

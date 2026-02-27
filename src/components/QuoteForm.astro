@@ -1,0 +1,246 @@
+---
+import { ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
+
+interface Props {
+  siteKey?: string;
+}
+
+const { siteKey } = Astro.props;
+const turnstileSiteKey = siteKey || import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA';
+---
+
+<div id="quote-form-container" class="bg-stone-900 border border-orange-600/30 p-8 rounded-sm w-full shadow-2xl animate-fade-in-up">
+  <div id="form-view">
+    <div class="mb-8 border-b border-orange-600/10 pb-6 text-center">
+      <h2 class="text-2xl font-display font-bold uppercase mb-2">Request Estimate</h2>
+      <p class="text-stone-400 text-xs uppercase tracking-widest font-bold">The No-Surprise Guarantee</p>
+    </div>
+
+    <form id="quote-form" class="space-y-3">
+      <div id="submission-error" class="hidden bg-red-900/10 border border-red-900/50 rounded-sm p-4 flex items-start space-x-3 mb-4 text-left">
+        <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+        <div>
+          <p id="error-message" class="text-red-500 text-xs uppercase tracking-widest font-bold"></p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <input
+            type="text"
+            name="name"
+            required
+            class="w-full bg-stone-950 border border-stone-800 focus:border-orange-600 p-4 font-bold text-white focus:outline-none transition-all text-sm uppercase placeholder:text-stone-700"
+            placeholder="Full Name*"
+          />
+        </div>
+
+        <div>
+          <input
+            type="tel"
+            name="phone"
+            required
+            class="w-full bg-stone-950 border border-stone-800 focus:border-orange-600 p-4 font-bold text-white focus:outline-none transition-all text-sm uppercase placeholder:text-stone-700"
+            placeholder="Phone Number*"
+          />
+        </div>
+      </div>
+
+      <div>
+        <input
+          type="email"
+          name="email"
+          required
+          class="w-full bg-stone-950 border border-stone-800 focus:border-orange-600 p-4 font-bold text-white focus:outline-none transition-all text-sm uppercase placeholder:text-stone-700"
+          placeholder="Email Address*"
+        />
+      </div>
+
+      <div>
+        <input
+          id="address-input"
+          type="text"
+          name="address"
+          required
+          class="w-full bg-stone-950 border border-stone-800 focus:border-orange-600 p-4 font-bold text-white focus:outline-none transition-all text-sm uppercase placeholder:text-stone-700"
+          placeholder="Property Address (Start Typing)*"
+        />
+      </div>
+
+      <div class="pt-2 border-t border-orange-600/10 space-y-2">
+        <label class="flex gap-3 cursor-pointer group">
+          <input
+            type="checkbox"
+            name="consent"
+            required
+            class="mt-0.5 w-4 h-4 rounded-sm border-orange-600/50 bg-stone-950 text-orange-600 focus:ring-orange-600 accent-orange-600 transition-all font-bold cursor-pointer"
+          />
+          <span class="text-[11px] text-stone-400 leading-snug uppercase tracking-wider text-left">
+            By checking this box I agree to Deck Masters' <a href="#/terms" class="text-orange-600 hover:underline font-bold">Terms</a> &amp; <a href="#/privacy" class="text-orange-600 hover:underline font-bold">Privacy Policy</a> and consent to receive SMS messages about my project. Msg &amp; data rates may apply. Reply STOP to opt out. *
+          </span>
+        </label>
+
+        <label class="flex gap-3 cursor-pointer group">
+          <input
+            type="checkbox"
+            name="marketingConsent"
+            required
+            class="mt-0.5 w-4 h-4 rounded-sm border-orange-600/50 bg-stone-950 text-orange-600 focus:ring-orange-600 accent-orange-600 transition-all font-bold cursor-pointer"
+          />
+          <span class="text-[11px] text-stone-400 leading-snug uppercase tracking-wider text-left">
+            I consent to receive recurring automated marketing texts (promos, offers) from Deck Masters. Consent is not required to purchase. Msg frequency varies. Msg &amp; data rates may apply. Reply STOP to cancel. *
+          </span>
+        </label>
+      </div>
+
+      <div class="flex justify-center py-2">
+        <div id="turnstile-container" data-sitekey={turnstileSiteKey}></div>
+      </div>
+
+      <button
+        type="submit"
+        id="submit-button"
+        class="w-full bg-orange-700 text-white hover:bg-orange-600 py-5 rounded-sm font-bold uppercase text-xs tracking-[0.25em] transition-all shadow-xl shadow-orange-950/40 flex items-center justify-center gap-2 group disabled:opacity-50"
+      >
+        <span id="button-text">Check Availability & Get Quote</span>
+        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+      </button>
+    </form>
+  </div>
+
+  <div id="success-view" class="hidden py-12 text-center animate-fade-in">
+    <div class="w-20 h-20 bg-green-900/20 rounded-full flex items-center justify-center mb-8 border border-green-900 text-green-500 mx-auto">
+      <CheckCircle className="w-10 h-10" />
+    </div>
+    <h2 class="text-4xl font-display font-bold uppercase mb-4">Inquiry Received!</h2>
+    <p class="text-stone-400 max-w-md mb-8 leading-relaxed mx-auto">
+      Thank you for trusting Deck Masters. We'll get back to you within 1 hour to discuss your project.
+    </p>
+    <button
+      id="reset-form"
+      class="border border-stone-700 text-white px-8 py-3 font-bold uppercase text-xs tracking-widest hover:bg-white hover:text-stone-950 transition-all"
+    >
+      Submit Another Request
+    </button>
+  </div>
+</div>
+
+<script>
+  import { actions } from 'astro:actions';
+
+  const form = document.getElementById('quote-form') as HTMLFormElement;
+  const submitButton = document.getElementById('submit-button') as HTMLButtonElement;
+  const buttonText = document.getElementById('button-text');
+  const formView = document.getElementById('form-view');
+  const successView = document.getElementById('success-view');
+  const resetBtn = document.getElementById('reset-form');
+  const errorContainer = document.getElementById('submission-error');
+  const errorMessage = document.getElementById('error-message');
+  const addressInput = document.getElementById('address-input') as HTMLInputElement;
+  const turnstileContainer = document.getElementById('turnstile-container');
+
+  let turnstileToken = '';
+  let widgetId = '';
+
+  function initTurnstile() {
+    if (window.turnstile && turnstileContainer) {
+      const sitekey = turnstileContainer.dataset.sitekey;
+      widgetId = window.turnstile.render(turnstileContainer, {
+        sitekey: sitekey,
+        callback: (token: string) => {
+          turnstileToken = token;
+          errorContainer?.classList.add('hidden');
+        },
+      });
+    }
+  }
+
+  function initAutocomplete() {
+    if (window.google && window.google.maps && window.google.maps.places && addressInput) {
+      const autocomplete = new window.google.maps.places.Autocomplete(addressInput, {
+        types: ['address'],
+        componentRestrictions: { country: 'us' },
+        fields: ['formatted_address']
+      });
+
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if (place.formatted_address) {
+          addressInput.value = place.formatted_address;
+        }
+      });
+    }
+  }
+
+  // Poll for Turnstile
+  const turnstileInterval = setInterval(() => {
+    if (window.turnstile) {
+      clearInterval(turnstileInterval);
+      initTurnstile();
+    }
+  }, 100);
+
+  // Poll for Google Maps
+  const googleInterval = setInterval(() => {
+    if (window.google && window.google.maps && window.google.maps.places) {
+      clearInterval(googleInterval);
+      initAutocomplete();
+    }
+  }, 100);
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    if (!turnstileToken) {
+      errorMessage!.textContent = 'Please complete the security check.';
+      errorContainer?.classList.remove('hidden');
+      return;
+    }
+
+    submitButton.disabled = true;
+    if (buttonText) buttonText.textContent = 'Processing...';
+    errorContainer?.classList.add('hidden');
+
+    const formData = new FormData(form);
+    const payload = {
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      phone: formData.get('phone') as string,
+      address: formData.get('address') as string,
+      consent: formData.get('consent') === 'on',
+      marketingConsent: formData.get('marketingConsent') === 'on',
+      turnstileToken
+    };
+
+    try {
+      const { data: result, error } = await actions.submitLead(payload);
+
+      if (error) {
+        errorMessage!.textContent = error.message || 'Submission failed. Please try again.';
+        errorContainer?.classList.remove('hidden');
+        submitButton.disabled = false;
+        if (buttonText) buttonText.textContent = 'Check Availability & Get Quote';
+      } else {
+        formView?.classList.add('hidden');
+        successView?.classList.remove('hidden');
+        form.reset();
+        turnstileToken = '';
+        if (window.turnstile && widgetId) window.turnstile.reset(widgetId);
+      }
+    } catch (err) {
+      errorMessage!.textContent = 'An unexpected error occurred.';
+      errorContainer?.classList.remove('hidden');
+      submitButton.disabled = false;
+      if (buttonText) buttonText.textContent = 'Check Availability & Get Quote';
+    }
+  });
+
+  resetBtn?.addEventListener('click', () => {
+    successView?.classList.add('hidden');
+    formView?.classList.remove('hidden');
+    submitButton.disabled = false;
+    if (buttonText) buttonText.textContent = 'Check Availability & Get Quote';
+    if (window.turnstile && widgetId) window.turnstile.reset(widgetId);
+    turnstileToken = '';
+  });
+</script>

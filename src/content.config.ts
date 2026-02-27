@@ -9,6 +9,7 @@ const services = defineCollection({
     description: z.string(),
     city: z.string(),
     serviceName: z.string(),
+    category: z.string().default('deck-building'), // Added for siloed SEO
   }),
 });
 
