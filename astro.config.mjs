@@ -4,29 +4,27 @@ import tailwindcss from '@tailwindcss/vite';
 import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
-  output: 'server',
+  output: 'static', 
   adapter: cloudflare({
-    cloudflareModules: true,
-    imageService: 'cloudflare-binding',
+    imageService: 'compile',
     platformProxy: {
-      enabled: true
+      enabled: true,
+      // Add these flags to prevent the "Hung Worker" error
+      experimentalCompatibilityFlags: ["nodejs_compat", "global_fetch_strictly_public"]
     }
   }),
   integrations: [react()],
   vite: {
-    server: {
-      hmr: {
-        port: 24678,
-      }
-    },
     plugins: [tailwindcss()],
-    build: {
-      target: 'es2022',
-      cssTarget: 'es2022',
-      cssMinify: 'lightningcss',
+    optimizeDeps: {
+      exclude: ['astro/compiler-runtime', 'astro/assets/services/sharp']
     },
     ssr: {
-      external: ['lucide-react'],
+      noExternal: ['picomatch', 'lucide-react', '@astrojs/react'],
+    },
+    build: {
+      target: 'es2022',
+      cssMinify: 'lightningcss',
     },
   },
 });

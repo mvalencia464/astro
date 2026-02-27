@@ -31,14 +31,14 @@ const optimizedHero = await getImage({
   width: 1920,
   height: 1080,
   format: 'webp',
-  quality: 80
+  quality: 75 // Slightly reduced quality to prevent file bloat
 });
 
 // 2. Pre-optimize first 6 portfolio images for the React Grid using Vite's glob
 const portfolioAssets = import.meta.glob('../assets/portfolio/*.webp', { eager: true });
 
 const preparedPortfolioData = await Promise.all(
-  portfolioData.map(async (item, index) => {
+  portfolioData.slice(0, 6).map(async (item, index) => {
     // Find matching asset in the glob results
     const assetFileName = item.src.split('/').pop();
     const assetKey = Object.keys(portfolioAssets).find(key => key.endsWith(assetFileName!));
@@ -66,6 +66,9 @@ const turnstileSiteKey = (env as any)?.PUBLIC_TURNSTILE_SITE_KEY || process.env.
 ---
 
 <BaseLayout title={title} description={description}>
+  {/* Preload Hero Image for LCP Optimization */}
+  <link rel="preload" as="image" href={optimizedHero.src} fetchpriority="high" slot="head" />
+
   <!-- Header Navigation -->
   <Header />
 
@@ -80,6 +83,8 @@ const turnstileSiteKey = (env as any)?.PUBLIC_TURNSTILE_SITE_KEY || process.env.
         class="w-full h-full object-cover opacity-70 scale-105 animate-slow-zoom"
         fetchpriority="high"
         loading="eager"
+        width="1920"
+        height="1080"
       />
       <div class="absolute inset-0 bg-stone-950/50 mix-blend-multiply"></div>
       <div class="absolute inset-0 bg-gradient-to-b from-stone-950/90 via-stone-950/40 to-stone-950"></div>
