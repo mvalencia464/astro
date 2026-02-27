@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import GALLERY_DATA from '../data/portfolio-gallery.json';
 import { ArrowRight } from 'lucide-react';
 
@@ -15,6 +15,27 @@ interface PortfolioGridProps {
 
 export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ initialData }) => {
   const data = initialData || (GALLERY_DATA as PortfolioItem[]);
+  const [visibleCount, setVisibleCount] = useState(6);
+  const loaderRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && visibleCount < data.length) {
+          setVisibleCount((prev) => Math.min(prev + 6, data.length));
+        }
+      },
+      { threshold: 0.1, rootMargin: '200px' }
+    );
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [visibleCount, data.length]);
+
+  const displayedItems = data.slice(0, visibleCount);
 
   return (
     <section className="py-24 bg-stone-900 relative overflow-hidden">
@@ -41,7 +62,7 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ initialData }) => 
 
         {/* Image Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-[250px]">
-          {data.map((item, index) => (
+          {displayedItems.map((item, index) => (
             <div
               key={index}
               className="relative group overflow-hidden rounded-sm bg-stone-800"
@@ -61,6 +82,13 @@ export const PortfolioGrid: React.FC<PortfolioGridProps> = ({ initialData }) => 
             </div>
           ))}
         </div>
+
+        {/* Sentinel element for infinite scroll */}
+        {visibleCount < data.length && (
+          <div ref={loaderRef} className="h-20 w-full flex items-center justify-center mt-8">
+            <div className="w-8 h-8 border-t-2 border-orange-600 rounded-full animate-spin"></div>
+          </div>
+        )}
       </div>
     </section>
   );

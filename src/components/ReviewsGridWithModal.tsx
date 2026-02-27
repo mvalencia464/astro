@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Star, Image as ImageIcon } from 'lucide-react';
 import TestimonialVideoCard from './TestimonialVideoCard';
 import TestimonialImageModal from './TestimonialImageModal';
@@ -20,6 +20,8 @@ interface ProcessedReview {
 
 const ReviewsGridWithModal = ({ testimonialsData }: { testimonialsData: { rawReviews: Array<any> } }) => {
     const [selectedReview, setSelectedReview] = useState<ProcessedReview | null>(null);
+    const [visibleCount, setVisibleCount] = useState(12);
+    const loaderRef = useRef<HTMLDivElement>(null);
 
     const filteredReviews: ProcessedReview[] = (testimonialsData.rawReviews as Array<any>)
         .filter((r: any) => r.text && r.text.trim().length > 0 && r.rating >= 4)
@@ -34,10 +36,29 @@ const ReviewsGridWithModal = ({ testimonialsData }: { testimonialsData: { rawRev
             return bIsVideo - aIsVideo;
         });
 
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && visibleCount < filteredReviews.length) {
+                    setVisibleCount((prev) => Math.min(prev + 12, filteredReviews.length));
+                }
+            },
+            { threshold: 0.1, rootMargin: '400px' }
+        );
+
+        if (loaderRef.current) {
+            observer.observe(loaderRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [visibleCount, filteredReviews.length]);
+
+    const displayedReviews = filteredReviews.slice(0, visibleCount);
+
     return (
         <>
             <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
-                {filteredReviews.map((review, i) => {
+                {displayedReviews.map((review, i) => {
                     const isVideoTestimonial = review.videoUrl && typeof review.videoUrl === 'string';
 
                     return isVideoTestimonial ? (
@@ -117,6 +138,13 @@ const ReviewsGridWithModal = ({ testimonialsData }: { testimonialsData: { rawRev
                     );
                 })}
             </div>
+
+            {/* Sentinel element for infinite scroll */}
+            {visibleCount < filteredReviews.length && (
+                <div ref={loaderRef} className="h-20 w-full flex items-center justify-center mt-8">
+                    <div className="w-8 h-8 border-t-2 border-orange-600 rounded-full animate-spin"></div>
+                </div>
+            )}
 
             {selectedReview && (
                 <TestimonialImageModal

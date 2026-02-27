@@ -47,8 +47,9 @@ const preparedPortfolioData = await Promise.all(
       const asset = (portfolioAssets[assetKey] as any).default;
       const optimized = await getImage({
         src: asset,
-        width: 800,
+        width: 600, // Reduced from 800
         format: 'webp',
+        quality: 70 // Explicitly set lower quality for grid items
       });
       return { 
         ...item, 
