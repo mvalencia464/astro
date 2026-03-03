@@ -30,10 +30,14 @@ async function findAndConvertImages(directory, baseDir = directory) {
     } else if (/\.(webp|png|jpg|jpeg)$/i.test(entry.name)) {
       const outputPath = fullPath.replace(/\.[^.]+$/, '.avif');
       
-      // Skip if AVIF already exists
+      // Skip if AVIF already exists (check mtime to avoid unnecessary work)
       if (fs.existsSync(outputPath)) {
-        console.log(`⏭️  ${path.relative(baseDir, outputPath)} (already exists)`);
-        continue;
+        const sourceStats = fs.statSync(fullPath);
+        const avifStats = fs.statSync(outputPath);
+        if (avifStats.mtimeMs > sourceStats.mtimeMs) {
+          // AVIF is newer than source, skip
+          continue;
+        }
       }
 
       try {
