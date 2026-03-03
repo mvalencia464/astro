@@ -1,16 +1,2 @@
-import { mapAssetUrl } from './assetMapper';
-import type { ImageMetadata } from 'astro';
-import GALLERY_DATA from '../data/portfolio-gallery.json';
-
-export interface GalleryItem {
-  src: string;
-  caption: string;
-  metadata?: ImageMetadata | string;
-}
-
-export function getPortfolioGallery(): GalleryItem[] {
-  return (GALLERY_DATA as any[]).map(item => ({
-    ...item,
-    metadata: mapAssetUrl(item.src)
-  }));
-}
+// Removed: Portfolio utilities now use Astro 6 content collections
+// Use `getCollection('decks')` from astro:content instead

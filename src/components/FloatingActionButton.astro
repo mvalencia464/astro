@@ -1,0 +1,121 @@
+---
+interface Action {
+  label: string;
+  onClick?: () => void;
+  icon?: string;
+}
+
+interface Props {
+  onClick?: string;
+  position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
+  label?: string;
+  actions?: Action[];
+}
+
+const {
+  onClick,
+  position = 'bottom-right',
+  label = 'Contact',
+  actions = [],
+} = Astro.props;
+
+const positionClasses = {
+  'bottom-right': 'bottom-6 right-6',
+  'bottom-left': 'bottom-6 left-6',
+  'top-right': 'top-6 right-6',
+  'top-left': 'top-6 left-6',
+};
+---
+
+<div class={`fab-container fixed ${positionClasses[position]} z-40 group`}>
+  <!-- Action menu items -->
+  <div id="fab-actions" class="fab-actions absolute bottom-full right-0 mb-3 flex flex-col gap-2 hidden">
+    {actions.map((action, idx) => (
+      <button
+        class="fab-action flex items-center justify-end gap-3 bg-stone-900 hover:bg-stone-800 text-white px-4 py-2.5 rounded-lg shadow-lg transition-all duration-200 border border-stone-800 hover:border-orange-600 group/item"
+        data-action={idx}
+      >
+        <span class="text-xs font-semibold uppercase tracking-wide">{action.label}</span>
+        {action.icon && <span>{action.icon}</span>}
+      </button>
+    ))}
+  </div>
+
+  <!-- Main FAB button -->
+  <button
+    id="fab-main"
+    class="fab-btn relative w-16 h-16 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110 active:scale-95 border-2 border-orange-600 hover:border-orange-500 group/fab"
+    title={label}
+  >
+    <!-- Phone icon -->
+    <svg class="w-8 h-8 text-orange-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+      />
+    </svg>
+
+    <!-- Tooltip -->
+    <div class="absolute bottom-full right-0 mb-3 bg-stone-900 text-white px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap opacity-0 group-hover/fab:opacity-100 transition-opacity duration-300 pointer-events-none border border-stone-800">
+      {label}
+    </div>
+
+    <!-- Pulse animation when actions available -->
+    {actions.length > 0 && (
+      <div class="fab-pulse absolute inset-0 rounded-full bg-orange-600 opacity-0 group-hover/fab:opacity-20 animate-pulse"></div>
+    )}
+  </button>
+</div>
+
+<script define:vars={{ actions: JSON.stringify(actions), onClick }}>
+  const fabBtn = document.getElementById('fab-main');
+  const fabActions = document.getElementById('fab-actions');
+  const actionButtons = document.querySelectorAll('.fab-action');
+
+  fabBtn?.addEventListener('click', () => {
+    if (actions && actions.length > 0) {
+      fabActions?.classList.toggle('hidden');
+    } else if (onClick) {
+      eval(onClick);
+    }
+  });
+
+  actionButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const idx = btn.getAttribute('data-action');
+      const action = actions[parseInt(idx)];
+      if (action && action.onClick) {
+        eval(action.onClick);
+      }
+      fabActions?.classList.add('hidden');
+    });
+  });
+
+  // Close menu on outside click
+  document.addEventListener('click', (e) => {
+    if (
+      !document.querySelector('.fab-container')?.contains(e.target as Node)
+    ) {
+      fabActions?.classList.add('hidden');
+    }
+  });
+</script>
+
+<style>
+  .fab-actions {
+    animation: slideUp 200ms ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+</style>

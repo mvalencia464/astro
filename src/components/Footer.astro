@@ -192,32 +192,37 @@ const { siteKey } = Astro.props;
   </div>
 </footer>
 
-<script>
-  // Testimonial rotation
-  const testimonials = [
-    { quote: "From the initial consultation to the final product... Jordan gave us great recommendations.", author: "Anton Szender" },
-    { quote: "I had a general idea of what I wanted... I ended up with front and back decks that I love.", author: "Shelly Wells" },
-    { quote: "Professional, precise, prompt—clean and accurate. Perfection.", author: "Ruth McNearney" }
-  ];
+<script is:inline>
+  // Ensure this only runs once
+  if (!window.__footerInitialized) {
+    window.__footerInitialized = true;
 
-  let currentTestimonial = 0;
-  const testimonialSlide = document.querySelector('.testimonial-slide');
+    // Testimonial rotation
+    const testimonials = [
+      { quote: "From the initial consultation to the final product... Jordan gave us great recommendations.", author: "Anton Szender" },
+      { quote: "I had a general idea of what I wanted... I ended up with front and back decks that I love.", author: "Shelly Wells" },
+      { quote: "Professional, precise, prompt—clean and accurate. Perfection.", author: "Ruth McNearney" }
+    ];
 
-  if (testimonialSlide) {
-    function rotateTestimonial() {
-      currentTestimonial = (currentTestimonial + 1) % testimonials.length;
-      const current = testimonials[currentTestimonial];
-      testimonialSlide.innerHTML = `
-        <p class="text-stone-300 font-light italic text-lg leading-relaxed mb-2">
-          "${current.quote}"
-        </p>
-        <div class="flex items-center gap-2">
-          <div class="h-px w-8 bg-orange-600"></div>
-          <span class="text-stone-400 text-xs font-bold uppercase tracking-widest">${current.author}</span>
-        </div>
-      `;
+    let currentTestimonial = 0;
+    const testimonialSlide = document.querySelector('.testimonial-slide');
+
+    if (testimonialSlide) {
+      function rotateTestimonial() {
+        currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+        const current = testimonials[currentTestimonial];
+        testimonialSlide.innerHTML = `
+          <p class="text-stone-300 font-light italic text-lg leading-relaxed mb-2">
+            "${current.quote}"
+          </p>
+          <div class="flex items-center gap-2">
+            <div class="h-px w-8 bg-orange-600"></div>
+            <span class="text-stone-400 text-xs font-bold uppercase tracking-widest">${current.author}</span>
+          </div>
+        `;
+      }
+
+      setInterval(rotateTestimonial, 6000);
     }
-
-    setInterval(rotateTestimonial, 6000);
   }
 </script>

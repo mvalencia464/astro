@@ -1,0 +1,254 @@
+---
+// Astro 6 Pure Component - Zero React, Touch & Navigation Native APIs
+// Replaces TestimonialImageCarousel.tsx with vanilla JavaScript & Intersection Observer
+import { Image } from 'astro:assets';
+
+interface Props {
+  images: string[];
+  reviewerName: string;
+}
+
+const { images, reviewerName } = Astro.props;
+
+// Return nothing if no images provided
+if (!images || images.length === 0) {
+  throw new Error(`TestimonialImageCarousel requires 'images' prop with at least one image`);
+}
+---
+
+<div
+  class="carousel-container relative w-full bg-gray-100 rounded-lg overflow-hidden group"
+  data-review-name={reviewerName}
+>
+  <!-- Main Image Container -->
+  <div class="relative w-full aspect-video">
+    <!-- Image will be loaded via vanilla JS with lazy loading -->
+    <img
+      id="carousel-image"
+      src={images[0]}
+      alt={`${reviewerName} project 1`}
+      class="carousel-image w-full h-full object-cover transition-opacity duration-300"
+      loading="lazy"
+      decoding="async"
+    />
+
+    <!-- Image Counter -->
+    {images.length > 1 && (
+      <div
+        id="image-counter"
+        class="absolute bottom-3 right-3 bg-black bg-opacity-60 text-white px-3 py-1 rounded-full text-sm font-medium"
+      >
+        <span id="current-index">1</span> / <span id="total-images">{images.length}</span>
+      </div>
+    )}
+  </div>
+
+  <!-- Navigation Arrows (Desktop) -->
+  {images.length > 1 && (
+    <>
+      <button
+        class="carousel-btn carousel-btn-prev absolute left-3 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-2 rounded-full transition-all opacity-0 group-hover:opacity-100"
+        aria-label="Previous image"
+        type="button"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </button>
+
+      <button
+        class="carousel-btn carousel-btn-next absolute right-3 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-2 rounded-full transition-all opacity-0 group-hover:opacity-100"
+        aria-label="Next image"
+        type="button"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </button>
+
+      <!-- Dots Indicator -->
+      <div
+        id="dots-container"
+        class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2"
+      >
+        {images.map((_, index) => (
+          <button
+            class={`carousel-dot w-2 h-2 rounded-full transition-all ${
+              index === 0
+                ? 'bg-white w-6 carousel-dot-active'
+                : 'bg-white bg-opacity-50 hover:bg-opacity-75'
+            }`}
+            data-index={index}
+            aria-label={`Go to image ${index + 1}`}
+            type="button"
+          />
+        ))}
+      </div>
+    </>
+  )}
+
+  <!-- Mobile Swipe Hint -->
+  {images.length > 1 && (
+    <div class="absolute top-3 left-1/2 -translate-x-1/2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded hidden max-sm:block">
+      Swipe to browse
+    </div>
+  )}
+</div>
+
+<script define:vars={{ images, reviewerName }}>
+  class CarouselController {
+    constructor(containerSelector, imagesData, reviewerName) {
+      this.container = document.querySelector(containerSelector);
+      this.images = imagesData;
+      this.reviewerName = reviewerName;
+      this.currentIndex = 0;
+      this.touchStart = 0;
+      this.touchEnd = 0;
+
+      this.image = this.container.querySelector('#carousel-image');
+      this.prevBtn = this.container.querySelector('.carousel-btn-prev');
+      this.nextBtn = this.container.querySelector('.carousel-btn-next');
+      this.dotsContainer = this.container.querySelector('#dots-container');
+      this.dots = Array.from(this.container.querySelectorAll('.carousel-dot'));
+      this.currentIndexSpan = this.container.querySelector('#current-index');
+
+      this.init();
+    }
+
+    init() {
+      // Arrow navigation
+      if (this.prevBtn) {
+        this.prevBtn.addEventListener('click', () => this.goToPrevious());
+      }
+      if (this.nextBtn) {
+        this.nextBtn.addEventListener('click', () => this.goToNext());
+      }
+
+      // Dot navigation
+      this.dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => this.goToIndex(index));
+      });
+
+      // Touch events for mobile swipe
+      this.container.addEventListener('touchstart', (e) => this.handleTouchStart(e), false);
+      this.container.addEventListener('touchend', (e) => this.handleTouchEnd(e), false);
+
+      // Keyboard navigation (accessibility)
+      document.addEventListener('keydown', (e) => {
+        if (this.container.contains(document.activeElement)) {
+          if (e.key === 'ArrowLeft') this.goToPrevious();
+          if (e.key === 'ArrowRight') this.goToNext();
+        }
+      });
+    }
+
+    handleTouchStart(e) {
+      this.touchStart = e.targetTouches[0].clientX;
+    }
+
+    handleTouchEnd(e) {
+      this.touchEnd = e.changedTouches[0].clientX;
+      this.handleSwipe();
+    }
+
+    handleSwipe() {
+      if (!this.touchStart || !this.touchEnd) return;
+
+      const distance = this.touchStart - this.touchEnd;
+      const isLeftSwipe = distance > 50;
+      const isRightSwipe = distance < -50;
+
+      if (isLeftSwipe) {
+        this.goToNext();
+      } else if (isRightSwipe) {
+        this.goToPrevious();
+      }
+
+      // Reset
+      this.touchStart = 0;
+      this.touchEnd = 0;
+    }
+
+    goToPrevious() {
+      this.currentIndex =
+        this.currentIndex === 0 ? this.images.length - 1 : this.currentIndex - 1;
+      this.updateCarousel();
+    }
+
+    goToNext() {
+      this.currentIndex =
+        this.currentIndex === this.images.length - 1 ? 0 : this.currentIndex + 1;
+      this.updateCarousel();
+    }
+
+    goToIndex(index) {
+      if (index >= 0 && index < this.images.length) {
+        this.currentIndex = index;
+        this.updateCarousel();
+      }
+    }
+
+    updateCarousel() {
+      // Update image with fade transition
+      this.image.style.opacity = '0';
+      setTimeout(() => {
+        this.image.src = this.images[this.currentIndex];
+        this.image.alt = `${this.reviewerName} project ${this.currentIndex + 1}`;
+        this.image.style.opacity = '1';
+      }, 150);
+
+      // Update counter
+      if (this.currentIndexSpan) {
+        this.currentIndexSpan.textContent = this.currentIndex + 1;
+      }
+
+      // Update dots
+      this.dots.forEach((dot, index) => {
+        if (index === this.currentIndex) {
+          dot.classList.add('bg-white', 'w-6', 'carousel-dot-active');
+          dot.classList.remove('bg-opacity-50', 'hover:bg-opacity-75');
+        } else {
+          dot.classList.remove('bg-white', 'w-6', 'carousel-dot-active');
+          dot.classList.add('bg-opacity-50', 'hover:bg-opacity-75');
+        }
+      });
+    }
+  }
+
+  // Initialize carousel when DOM is ready
+  const carousel = new CarouselController('.carousel-container', images, reviewerName);
+</script>
+
+<style>
+  .carousel-image {
+    transition: opacity 300ms ease-in-out;
+  }
+
+  .carousel-dot {
+    cursor: pointer;
+  }
+
+  .carousel-dot-active {
+    width: 1.5rem; /* w-6 in Tailwind */
+  }
+</style>
