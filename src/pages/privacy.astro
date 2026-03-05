@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'Privacy Policy | Deck Masters';
+const description = 'Privacy Policy for Deck Masters. How we collect, use, and protect your information.';
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+
+  <main class="min-h-screen pt-24 pb-24">
+    <div class="container mx-auto px-6 max-w-3xl">
+      <h1 class="text-4xl font-display font-bold uppercase mb-8">Privacy Policy</h1>
+      <p class="text-stone-400 mb-8">Last updated: March 2025.</p>
+
+      <div class="prose prose-invert prose-stone max-w-none space-y-8 text-stone-300">
+        <section>
+          <h2 class="text-xl font-display font-bold uppercase text-stone-200 mb-4">1. Information We Collect</h2>
+          <p>
+            We collect information you provide when requesting an estimate or contacting us, such as name, email,
+            phone number, and property address. We use this to respond to your inquiry and provide our services.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-display font-bold uppercase text-stone-200 mb-4">2. How We Use Your Information</h2>
+          <p>
+            Your information is used to communicate with you about your project, send estimates, and for internal
+            business purposes. With your consent, we may send marketing messages via SMS or email. Message and
+            data rates may apply for SMS; reply STOP to opt out.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-display font-bold uppercase text-stone-200 mb-4">3. Contact</h2>
+          <p>
+            For privacy-related questions, contact us at (907) 782-4043 or CONTACT@DECKMASTERSAK.COM.
+          </p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer siteKey={undefined} />
+</BaseLayout>

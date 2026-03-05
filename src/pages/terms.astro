@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'Terms of Service | Deck Masters';
+const description = 'Terms of Service for Deck Masters. Please read these terms before using our services.';
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+
+  <main class="min-h-screen pt-24 pb-24">
+    <div class="container mx-auto px-6 max-w-3xl">
+      <h1 class="text-4xl font-display font-bold uppercase mb-8">Terms of Service</h1>
+      <p class="text-stone-400 mb-8">Last updated: March 2025.</p>
+
+      <div class="prose prose-invert prose-stone max-w-none space-y-8 text-stone-300">
+        <section>
+          <h2 class="text-xl font-display font-bold uppercase text-stone-200 mb-4">1. Agreement to Terms</h2>
+          <p>
+            By accessing or using the Deck Masters website and services, you agree to be bound by these Terms of Service.
+            If you do not agree, please do not use our services.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-display font-bold uppercase text-stone-200 mb-4">2. Services</h2>
+          <p>
+            Deck Masters provides deck building, repair, and related outdoor living services in the Anchorage, Alaska area.
+            Scope, pricing, and timelines are defined in individual project agreements and estimates.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-display font-bold uppercase text-stone-200 mb-4">3. Contact</h2>
+          <p>
+            For questions about these terms, contact us at (907) 782-4043 or CONTACT@DECKMASTERSAK.COM.
+          </p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer siteKey={undefined} />
+</BaseLayout>
