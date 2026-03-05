@@ -1,0 +1,45 @@
+{
+  // Cloudflare Workers + Assets configuration
+  // Replaces wrangler.toml — uses JSONC for comments support
+  //
+  // DEPLOYMENT NOTE:
+  //   `astro build` emits dist/server/wrangler.json with the correct `main`
+  //   and relative `assets` paths. Deploy with either:
+  //     wrangler deploy --config dist/server/wrangler.json
+  //   or:
+  //     cd dist/server && wrangler deploy
+  //
+  // This root config is used by the Cloudflare Vite plugin (platformProxy)
+  // during `astro dev` to wire up local KV, env vars, and edge bindings
+  // via workerd — ensuring dev/prod parity without a `main` pre-build.
+  "name": "deckmasters-astro",
+  "account_id": "e1ef23a482d710064edcfdf77f1324c1",
+  "compatibility_date": "2025-09-23",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Workers Assets: static files in dist/client/ are served from
+  // Cloudflare's global CDN without hitting the Worker process.
+  // Critical for Lighthouse — zero TTFB for HTML/CSS/JS/images.
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS"
+  },
+
+  "vars": {
+    "PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAACibBjpNvEOAYivu"
+  },
+
+  "routes": [
+    {
+      "pattern": "decks.stokeleads.com",
+      "custom_domain": true
+    }
+  ],
+
+  "kv_namespaces": [
+    {
+      "binding": "SESSION",
+      "id": "220c7da78bbb4419b978f3276af98d47"
+    }
+  ]
+}

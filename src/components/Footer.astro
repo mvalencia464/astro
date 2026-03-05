@@ -90,7 +90,7 @@ const { siteKey } = Astro.props;
           </div>
           <div class="bg-stone-900 p-4 flex justify-between items-center border-t border-stone-800">
             <div class="flex items-center gap-2">
-              <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_92x30dp.png" alt="Google" class="h-5 opacity-80" />
+              <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_92x30dp.png" alt="Google" width="46" height="15" class="h-5 opacity-80" loading="lazy" />
               <span class="text-xs font-bold uppercase tracking-wider text-stone-400">Business Profile</span>
             </div>
             <div class="flex items-center gap-2">
@@ -132,7 +132,7 @@ const { siteKey } = Astro.props;
     <div class="border-t border-stone-900 py-12">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
         <div>
-          <h4 class="text-stone-300 font-bold uppercase text-xs mb-4 tracking-widest">Services</h4>
+          <p class="text-stone-300 font-bold uppercase text-xs mb-4 tracking-widest">Services</p>
           <ul class="space-y-2">
             <li><a href="#" class="text-stone-400 hover:text-stone-300 text-xs uppercase">Composite Decking</a></li>
             <li><a href="#" class="text-stone-400 hover:text-stone-300 text-xs uppercase">Hardwood Decks</a></li>
@@ -140,7 +140,7 @@ const { siteKey } = Astro.props;
           </ul>
         </div>
         <div>
-          <h4 class="text-stone-300 font-bold uppercase text-xs mb-4 tracking-widest">Company</h4>
+          <p class="text-stone-300 font-bold uppercase text-xs mb-4 tracking-widest">Company</p>
           <ul class="space-y-2">
             <li><a href="#" class="text-stone-400 hover:text-stone-300 text-xs uppercase">About Us</a></li>
             <li><a href="#" class="text-stone-400 hover:text-stone-300 text-xs uppercase">Our Process</a></li>
@@ -148,7 +148,7 @@ const { siteKey } = Astro.props;
           </ul>
         </div>
         <div>
-          <h4 class="text-stone-300 font-bold uppercase text-xs mb-4 tracking-widest">Neighborhoods</h4>
+          <p class="text-stone-300 font-bold uppercase text-xs mb-4 tracking-widest">Neighborhoods</p>
           <ul class="space-y-2">
             <li><a href="/areas/anchorage/" class="text-stone-400 hover:text-stone-300 text-xs uppercase">Anchorage</a></li>
             <li><a href="/areas/eagle-river/" class="text-stone-400 hover:text-stone-300 text-xs uppercase">Eagle River</a></li>
@@ -157,10 +157,10 @@ const { siteKey } = Astro.props;
           </ul>
         </div>
         <div>
-          <h4 class="text-stone-300 font-bold uppercase text-xs mb-4 tracking-widest">Legal</h4>
+          <p class="text-stone-300 font-bold uppercase text-xs mb-4 tracking-widest">Legal</p>
           <ul class="space-y-2">
-            <li><a href="#" class="text-stone-400 hover:text-stone-300 text-xs uppercase">Privacy Policy</a></li>
-            <li><a href="#" class="text-stone-400 hover:text-stone-300 text-xs uppercase">Terms of Service</a></li>
+            <li><a href="/privacy" class="text-stone-400 hover:text-stone-300 text-xs uppercase">Privacy Policy</a></li>
+            <li><a href="/terms" class="text-stone-400 hover:text-stone-300 text-xs uppercase">Terms of Service</a></li>
           </ul>
         </div>
       </div>
@@ -193,7 +193,6 @@ const { siteKey } = Astro.props;
 </footer>
 
 <script is:inline>
-  // Ensure this only runs once
   if (!window.__footerInitialized) {
     window.__footerInitialized = true;
 
@@ -203,26 +202,43 @@ const { siteKey } = Astro.props;
       { quote: "I had a general idea of what I wanted... I ended up with front and back decks that I love.", author: "Shelly Wells" },
       { quote: "Professional, precise, prompt—clean and accurate. Perfection.", author: "Ruth McNearney" }
     ];
-
     let currentTestimonial = 0;
     const testimonialSlide = document.querySelector('.testimonial-slide');
-
     if (testimonialSlide) {
-      function rotateTestimonial() {
+      setInterval(function() {
         currentTestimonial = (currentTestimonial + 1) % testimonials.length;
-        const current = testimonials[currentTestimonial];
-        testimonialSlide.innerHTML = `
-          <p class="text-stone-300 font-light italic text-lg leading-relaxed mb-2">
-            "${current.quote}"
-          </p>
-          <div class="flex items-center gap-2">
-            <div class="h-px w-8 bg-orange-600"></div>
-            <span class="text-stone-400 text-xs font-bold uppercase tracking-widest">${current.author}</span>
-          </div>
-        `;
-      }
+        const c = testimonials[currentTestimonial];
+        testimonialSlide.innerHTML =
+          '<p class="text-stone-300 font-light italic text-lg leading-relaxed mb-2">"' + c.quote + '"</p>' +
+          '<div class="flex items-center gap-2"><div class="h-px w-8 bg-orange-600"></div>' +
+          '<span class="text-stone-400 text-xs font-bold uppercase tracking-widest">' + c.author + '</span></div>';
+      }, 6000);
+    }
 
-      setInterval(rotateTestimonial, 6000);
+    // Lazy-load Cloudflare Turnstile only when the quote form enters the viewport.
+    // This removes ~190 KiB of Turnstile scripts from the critical path.
+    const formEl = document.getElementById('quote-form-container');
+    if (formEl && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) {
+          observer.disconnect();
+          if (!window.__turnstileLoaded) {
+            window.__turnstileLoaded = true;
+            const s = document.createElement('script');
+            s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+            s.async = true;
+            s.defer = true;
+            document.head.appendChild(s);
+          }
+        }
+      }, { rootMargin: '200px' });
+      observer.observe(formEl);
+    } else if (formEl) {
+      // Fallback: load immediately if IntersectionObserver isn't supported
+      const s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+      s.async = true;
+      document.head.appendChild(s);
     }
   }
 </script>

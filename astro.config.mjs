@@ -3,29 +3,30 @@ import tailwindcss from '@tailwindcss/vite';
 import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
-  output: 'static', 
+  output: 'static',
   adapter: cloudflare({
     imageService: 'compile',
     platformProxy: {
-      enabled: false,
-      // Add these flags to prevent the "Hung Worker" error
-      experimentalCompatibilityFlags: ["nodejs_compat", "global_fetch_strictly_public"]
-    }
+      enabled: true,
+    },
   }),
   image: {
-    // Use AVIF with WebP fallback for better compression and performance
-    formats: ['image/avif', 'image/webp', 'image/png', 'image/jpeg'],
-    remotePattern: [],
-    experimentalLayout: 'responsive',
+    formats: ['image/avif', 'image/webp'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.stokeleads.com',
+      },
+    ],
   },
   integrations: [],
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
-      exclude: ['astro/compiler-runtime', 'astro/assets/services/sharp']
+      exclude: ['astro/compiler-runtime', 'astro/assets/services/sharp'],
     },
     ssr: {
-      noExternal: ['picomatch', 'lucide-react'],
+      noExternal: ['picomatch'],
     },
     build: {
       target: 'es2020',

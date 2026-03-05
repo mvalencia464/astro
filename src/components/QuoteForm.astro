@@ -55,57 +55,56 @@ const googleMapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY || '';
       </div>
     </div>
 
+    <!-- Row 1: Name + Phone -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- Name -->
       <div>
         <input
           type="text"
           name="name"
-          placeholder="Full Name"
+          placeholder="Full Name*"
           class="quote-input w-full px-4 py-3 bg-stone-800 border border-stone-700 text-white placeholder-stone-500 focus:outline-none focus:border-orange-600 transition-colors"
           required
         />
         <span class="error-text text-red-500 text-xs mt-1 hidden"></span>
       </div>
-
-      <!-- Email -->
-      <div>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email Address"
-          class="quote-input w-full px-4 py-3 bg-stone-800 border border-stone-700 text-white placeholder-stone-500 focus:outline-none focus:border-orange-600 transition-colors"
-          required
-        />
-        <span class="error-text text-red-500 text-xs mt-1 hidden"></span>
-      </div>
-
-      <!-- Phone -->
       <div>
         <input
           type="tel"
           name="phone"
-          placeholder="Phone Number"
+          placeholder="Phone Number*"
           class="quote-input w-full px-4 py-3 bg-stone-800 border border-stone-700 text-white placeholder-stone-500 focus:outline-none focus:border-orange-600 transition-colors"
           required
-        />
-        <span class="error-text text-red-500 text-xs mt-1 hidden"></span>
-      </div>
-
-      <!-- Address -->
-      <div>
-        <input
-          type="text"
-          name="address"
-          id="address-input"
-          placeholder="Project Address"
-          class="quote-input w-full px-4 py-3 bg-stone-800 border border-stone-700 text-white placeholder-stone-500 focus:outline-none focus:border-orange-600 transition-colors"
         />
         <span class="error-text text-red-500 text-xs mt-1 hidden"></span>
       </div>
     </div>
 
-    <!-- Consent Checkbox -->
+    <!-- Row 2: Email -->
+    <div>
+      <input
+        type="email"
+        name="email"
+        placeholder="Email Address*"
+        class="quote-input w-full px-4 py-3 bg-stone-800 border border-stone-700 text-white placeholder-stone-500 focus:outline-none focus:border-orange-600 transition-colors"
+        required
+      />
+      <span class="error-text text-red-500 text-xs mt-1 hidden"></span>
+    </div>
+
+    <!-- Row 3: Address -->
+    <div>
+      <input
+        type="text"
+        name="address"
+        id="address-input"
+        placeholder="Property Address (Start Typing)*"
+        class="quote-input w-full px-4 py-3 bg-stone-800 border border-stone-700 text-white placeholder-stone-500 focus:outline-none focus:border-orange-600 transition-colors"
+        required
+      />
+      <span class="error-text text-red-500 text-xs mt-1 hidden"></span>
+    </div>
+
+    <!-- Consent Checkboxes -->
     <div class="pt-4 space-y-2">
       <label class="flex items-start gap-3 cursor-pointer">
         <input
@@ -114,8 +113,8 @@ const googleMapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY || '';
           class="mt-1 w-4 h-4 bg-stone-800 border border-stone-700 rounded accent-orange-600"
           required
         />
-        <span class="text-stone-400 text-xs leading-relaxed">
-          I understand that by submitting this form, Deck Masters may contact me regarding my inquiry.
+        <span class="text-stone-400 text-xs leading-relaxed uppercase">
+          By checking this box I agree to Deck Masters' <a href="/terms" class="text-orange-600 hover:underline font-bold">Terms</a> & <a href="/privacy" class="text-orange-600 hover:underline font-bold">Privacy Policy</a> and consent to receive SMS messages about my project. Msg & data rates may apply. Reply STOP to opt out. *
         </span>
       </label>
 
@@ -125,8 +124,8 @@ const googleMapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY || '';
           name="marketingConsent"
           class="mt-1 w-4 h-4 bg-stone-800 border border-stone-700 rounded accent-orange-600"
         />
-        <span class="text-stone-400 text-xs leading-relaxed">
-          I'd like to receive updates and promotional offers from Deck Masters.
+        <span class="text-stone-400 text-xs leading-relaxed uppercase">
+          I consent to receive recurring automated marketing texts (promos, offers) from Deck Masters. Consent is not required to purchase. Msg frequency varies. Msg & data rates may apply. Reply STOP to cancel. *
         </span>
       </label>
     </div>
@@ -141,15 +140,21 @@ const googleMapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY || '';
     <div class="pt-6">
       <button
         type="submit"
-        class="w-full bg-orange-600 hover:bg-orange-700 text-white font-display font-bold uppercase py-4 transition-all tracking-widest flex items-center justify-center gap-2"
+        class="w-full bg-orange-700 hover:bg-orange-800 text-white font-display font-bold uppercase py-4 transition-all tracking-widest flex items-center justify-center gap-2"
       >
-        Get Free Estimate
+        Check Availability & Get Quote
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
         </svg>
       </button>
     </div>
   </form>
+
+  <!-- Google Reviews badge -->
+  <div class="mt-6 pt-6 border-t border-stone-800 flex items-center justify-center gap-2">
+    <span class="text-orange-500" aria-hidden="true">★★★★★</span>
+    <span class="text-stone-400 text-xs uppercase tracking-widest font-bold">4.9, 122 Google Reviews</span>
+  </div>
 </div>
 
 <script define:vars={{ siteKey, googleMapsApiKey }}>

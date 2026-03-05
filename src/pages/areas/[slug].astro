@@ -2,7 +2,7 @@
 import { env } from 'cloudflare:workers';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header';
+import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 
 export const prerender = true;
@@ -28,7 +28,7 @@ const turnstileSiteKey = (env as any)?.PUBLIC_TURNSTILE_SITE_KEY || process.env.
 ---
 
 <BaseLayout title={pageTitle} description={description}>
-  <Header client:load />
+  <Header />
 
   <!-- Hero Section -->
   <section class="relative min-h-[70vh] flex items-center pt-24 pb-12 overflow-hidden">
@@ -56,7 +56,7 @@ const turnstileSiteKey = (env as any)?.PUBLIC_TURNSTILE_SITE_KEY || process.env.
       </p>
 
       <div class="flex flex-wrap gap-6 items-center">
-        <a href="/#quote" class="bg-orange-600 hover:bg-orange-500 text-white px-8 py-4 font-bold uppercase tracking-widest text-sm transition-colors text-center inline-block">
+        <a href="/#quote" class="bg-orange-700 hover:bg-orange-600 text-white px-8 py-4 font-bold uppercase tracking-widest text-sm transition-colors text-center inline-block">
           Get a Free Quote
         </a>
       </div>

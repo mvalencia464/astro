@@ -1,6 +1,11 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 
+// Must be false: POST-only routes cannot be pre-rendered as static files.
+// With output: 'static' (Astro 6's unified static/hybrid mode), setting this
+// tells the Cloudflare Worker to execute this handler at the edge on each request.
+export const prerender = false;
+
 export const POST: APIRoute = async ({ request }) => {
   // Verify request method
   if (request.method !== 'POST') {

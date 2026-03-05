@@ -1,0 +1,216 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.stokeleads.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# GoHighLevel Integration
+
+> Secure, server-side integration with GoHighLevel using Next.js Server Actions.
+
+<Note>
+  **🔒 SECURITY NOTICE**
+  This integration uses **Server Actions** to keep your HighLevel credentials secure.
+  Never expose your API tokens to the client-side (browser).
+</Note>
+
+## Architecture
+
+This integration follows the **Secure Proxy** pattern mandated by our [Architecture Rules](/architecture/rules):
+
+1. **Client:** React Form (Client Component) collects data.
+2. **Server:** Next.js Server Action (`'use server'`) validates and authenticates.
+3. **API:** Server Action communicates with HighLevel API securely.
+
+### Why this is safer
+
+* **No Exposed Secrets:** Your `GHL_API_KEY` stays on the server.
+* **No CORS Issues:** Server-to-server communication bypasses browser CORS restrictions.
+* **Validation:** Data is validated with Zod before it ever leaves your server.
+
+***
+
+## 1. Environment Setup
+
+Configure your tokens in Netlify (Production) or `.env.local` (Local).
+
+```bash .env.local theme={null}
+# ❌ NEVER use NEXT_PUBLIC_ for secrets!
+GHL_API_KEY=pit-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+GHL_LOCATION_ID=xxxxxxxxxxxxxxxx
+```
+
+***
+
+## 2. The Server Action (`actions/contact.ts`)
+
+This is the secure bridge. It runs **only on the server**.
+
+```typescript actions/contact.ts theme={null}
+'use server'
+
+import { z } from 'zod'
+import { revalidatePath } from 'next/cache'
+
+// 1. Define Validation Schema
+const ContactSchema = z.object({
+  firstName: z.string().min(1, 'First name is required'),
+  lastName: z.string().optional(),
+  email: z.string().email('Invalid email address'),
+  phone: z.string().min(10, 'Phone number is too short'),
+  message: z.string().optional(),
+})
+
+export async function createContact(prevState: any, formData: FormData) {
+  // 2. Validate Input
+  const validatedFields = ContactSchema.safeParse({
+    firstName: formData.get('firstName'),
+    lastName: formData.get('lastName'),
+    email: formData.get('email'),
+    phone: formData.get('phone'),
+    message: formData.get('message'),
+  })
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Validation failed'
+    }
+  }
+
+  // 3. Prepare Payload
+  const payload = {
+    ...validatedFields.data,
+    locationId: process.env.GHL_LOCATION_ID,
+    tags: ["Website Lead", "Next.js Form"],
+    source: "StokeLeads Website"
+  }
+
+  try {
+    // 4. Call HighLevel API
+    const response = await fetch('https://services.leadconnectorhq.com/contacts/', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.GHL_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Version': '2021-07-28'
+      },
+      body: JSON.stringify(payload)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error('GHL API Error:', errorData)
+      throw new Error('Failed to create contact')
+    }
+
+    revalidatePath('/')
+    return { message: 'Success! We will be in touch soon.' }
+
+  } catch (error) {
+    return { message: 'Something went wrong. Please try again.' }
+  }
+}
+```
+
+***
+
+## 3. The Client Form (`components/ContactForm.tsx`)
+
+This component handles the UI and invokes the Server Action. Note the use of `useActionState` (React 19).
+
+```tsx components/ContactForm.tsx theme={null}
+'use client'
+
+import { useActionState } from 'react'
+import { createContact } from '@/actions/contact'
+
+const initialState = {
+  message: '',
+  errors: {}
+}
+
+export function ContactForm() {
+  const [state, formAction, isPending] = useActionState(createContact, initialState)
+
+  return (
+    <form action={formAction} className="space-y-4">
+      {/* Name Fields */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="firstName">First Name</label>
+          <input name="firstName" id="firstName" required className="border p-2 w-full" />
+          <p className="text-red-500 text-sm">{state.errors?.firstName}</p>
+        </div>
+        <div>
+          <label htmlFor="lastName">Last Name</label>
+          <input name="lastName" id="lastName" className="border p-2 w-full" />
+        </div>
+      </div>
+
+      {/* Contact Info */}
+      <div>
+        <label htmlFor="email">Email</label>
+        <input name="email" id="email" type="email" required className="border p-2 w-full" />
+        <p className="text-red-500 text-sm">{state.errors?.email}</p>
+      </div>
+
+      <div>
+        <label htmlFor="phone">Phone</label>
+        <input name="phone" id="phone" type="tel" required className="border p-2 w-full" />
+        <p className="text-red-500 text-sm">{state.errors?.phone}</p>
+      </div>
+
+      {/* Submit Button */}
+      <button 
+        type="submit" 
+        disabled={isPending}
+        className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+      >
+        {isPending ? 'Sending...' : 'Get a Quote'}
+      </button>
+
+      {/* Feedback Message */}
+      {state.message && (
+        <p className={`text-center ${state.errors ? 'text-red-500' : 'text-green-500'}`}>
+          {state.message}
+        </p>
+      )}
+    </form>
+  )
+}
+```
+
+***
+
+## Common Pitfalls to Avoid
+
+### 1. Using `fetch` in Client Components
+
+**❌ Incorrect:**
+
+```typescript  theme={null}
+// Client Component
+const handleSubmit = async () => {
+  await fetch('https://services.leadconnectorhq.com/contacts/', ...) // CORS Error + Exposed Key!
+}
+```
+
+**✅ Correct:**
+Always wrap external API calls in a Server Action.
+
+### 2. Missing `use client`
+
+Components that use hooks like `useActionState` or event listeners must have `'use client'` at the top.
+
+### 3. Exposing Keys
+
+Never prefix your API keys with `NEXT_PUBLIC_` unless you explicitly want them readable by anyone on the internet.
+
+***
+
+## Troubleshooting
+
+| Error                 | Likely Cause      | Solution                                                           |
+| :-------------------- | :---------------- | :----------------------------------------------------------------- |
+| **401 Unauthorized**  | Invalid Token     | Check `GHL_API_KEY` in `.env.local`. Ensure it starts with `pit-`. |
+| **CORS Error**        | Client-side Fetch | Move the fetch call to a Server Action (`'use server'`).           |
+| **Validation Failed** | Schema Mismatch   | Ensure Zod schema matches your form `name` attributes.             |

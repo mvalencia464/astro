@@ -17,13 +17,9 @@
   "dependencies": {
     "@astrojs/check": "^0.9.6",
     "@astrojs/cloudflare": "^13.0.0-beta.8",
-    "@astrojs/react": "^4.4.2",
     "@tailwindcss/vite": "^4.2.0",
     "astro": "^6.0.0-beta.14",
     "jiti": "^2.6.1",
-    "lucide-react": "latest",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "tailwindcss": "^4.2.0"
   },
   "devDependencies": {

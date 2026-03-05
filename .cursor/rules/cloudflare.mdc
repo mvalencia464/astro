@@ -1,0 +1,64 @@
+---
+description: Rules for Cloudflare Workers deployment, API routes, and rendering modes in Astro 6.
+globs: ["src/pages/api/**/*.ts", "src/pages/**/*.astro", "astro.config.mjs", "wrangler.jsonc"]
+---
+
+# Cloudflare Workers + Astro 6 Rules
+
+## Output Mode
+
+- **Always use `output: 'static'`** in `astro.config.mjs` when targeting Cloudflare Workers with the `@astrojs/cloudflare` adapter.
+- In Astro 6, `output: 'static'` is the unified "hybrid" mode. Pages prerender at build time by default; individual routes opt out with `export const prerender = false`.
+- `output: 'hybrid'` was removed in Astro 6 beta — do not use it.
+- `output: 'server'` forces all routes through the Worker — avoid it; it kills Lighthouse TTI.
+
+## API Routes (Dynamic Edge Handlers)
+
+- Every API route that handles `POST`, `PUT`, `PATCH`, or `DELETE` **MUST** include:
+  ```ts
+  export const prerender = false;
+  ```
+  Without this, Astro attempts to pre-render the route as a static file and outputs a 404 HTML page instead of running the handler at the edge.
+- Do **not** define a `GET` handler on POST-only API routes. Let the platform return `405 Method Not Allowed` for unsupported methods rather than creating a static 404.
+- Use `import { env } from 'cloudflare:workers'` to access Cloudflare bindings (KV, Turnstile keys, etc.) inside API routes.
+
+## Wrangler Configuration
+
+- Use `wrangler.jsonc` (not `wrangler.toml`) — JSONC supports comments, which are essential for documenting bindings.
+- **Do NOT set `main` in the project-root `wrangler.jsonc`.** The `@cloudflare/vite-plugin` validates the `main` path at Vite config time (before the build runs), so a pre-build reference to `./dist/server/entry.mjs` causes an error.
+- `astro build` emits `dist/server/wrangler.json` with the correct relative `main` and `assets` fields. Deploy with:
+  ```sh
+  wrangler deploy --config dist/server/wrangler.json
+  # or
+  cd dist/server && wrangler deploy
+  ```
+- The project-root `wrangler.jsonc` is used only by the Cloudflare Vite plugin during `astro dev` to provide workerd bindings locally.
+- The `assets` key enables Cloudflare Workers Assets — static files in `./dist/client/` are served from Cloudflare's global CDN **without** hitting the Worker process:
+  ```jsonc
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS"
+  }
+  ```
+- Set `compatibility_flags: ["nodejs_compat"]` for Node.js API compatibility at the edge.
+- Do **not** commit `netlify.toml`, `vercel.json`, or `_headers`/`_redirects` — they conflict with Cloudflare Workers deployment.
+
+## Image Pipeline
+
+- Use `imageService: 'compile'` in the Cloudflare adapter to force Sharp build-time AVIF/WebP generation.
+- Declare `remotePatterns` in `astro.config.mjs` for every remote image hostname (e.g. `images.stokeleads.com`).
+- Use Astro's `<Picture />` component for all local static assets. Use `loading="eager"` and `fetchpriority="high"` for the LCP image only; all others use `loading="lazy"`.
+
+## Zero-JS Components
+
+- Prefer `.astro` components over React (`.tsx`) for all UI that does not require client state.
+- Use `<details>`/`<summary>` for zero-JS expandable sections (reviews load-more, FAQs, mobile menus).
+- Use CSS `:target` pseudo-class for zero-JS lightboxes and modals.
+- Apply `content-visibility: auto` + `contain-intrinsic-size` to off-screen repeated elements (review cards, portfolio items) to defer paint.
+- Never ship a `<script>` block that replicates what CSS or HTML can do natively.
+
+## Local Development
+
+- `platformProxy.enabled: true` in the adapter config activates the Cloudflare Vite plugin for local workerd dev parity.
+- Run `astro dev` for development — the Vite plugin proxies Cloudflare bindings (KV, env vars, Turnstile) locally via miniflare/workerd.
+- The `main` field in `wrangler.jsonc` must point to the post-build artifact; it does not need to exist before running `astro dev`.

@@ -1,4 +1,11 @@
 ---
+interface RawReview {
+  rating: number;
+  text?: string;
+  author?: string;
+  date?: string;
+}
+
 interface Props {
   title?: string;
   description?: string;
@@ -6,46 +13,66 @@ interface Props {
   cityName?: string;
   region?: string;
   canonical?: string;
+  reviews?: RawReview[];
 }
 
-const { 
-  title, 
-  description, 
-  serviceName = "Deck Building", 
-  cityName = "Anchorage",
-  region = "Alaska",
-  canonical 
+const {
+  title,
+  description,
+  serviceName = 'Deck Building',
+  cityName = 'Anchorage',
+  region = 'Alaska',
+  canonical,
+  reviews,
 } = Astro.props;
 
-const siteName = "Deck Masters";
+const siteName = 'Deck Masters';
 const fullTitle = title || `${serviceName} in ${cityName}, ${region} | ${siteName}`;
-const fullDescription = description || `Professional ${serviceName.toLowerCase()} in ${cityName}. Engineered for the ${region} climate with a 25-year warranty. Free estimates.`;
+const fullDescription =
+  description ||
+  `Professional ${serviceName.toLowerCase()} in ${cityName}. Engineered for the ${region} climate with a 25-year warranty. Free estimates.`;
 
-const schema = {
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "name": siteName,
-  "image": "https://deckmastersak.com/logo.png",
-  "@id": "https://deckmastersak.com",
-  "url": "https://deckmastersak.com",
-  "telephone": "(907) 782-4043",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "625 W 59th Ave Unit J",
-    "addressLocality": "Anchorage",
-    "addressRegion": "AK",
-    "postalCode": "99518",
-    "addressCountry": "US"
+// AggregateRating: derived at build time from reviews data
+const qualifiedReviews = reviews?.filter((r) => r.rating >= 1 && r.rating <= 5) ?? [];
+const aggregateRating =
+  qualifiedReviews.length >= 1
+    ? {
+        '@type': 'AggregateRating',
+        ratingValue: (
+          qualifiedReviews.reduce((sum, r) => sum + r.rating, 0) / qualifiedReviews.length
+        ).toFixed(1),
+        reviewCount: qualifiedReviews.length,
+        bestRating: '5',
+        worstRating: '1',
+      }
+    : undefined;
+
+const schema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: siteName,
+  image: 'https://deckmastersak.com/logo.png',
+  '@id': 'https://deckmastersak.com',
+  url: 'https://deckmastersak.com',
+  telephone: '(907) 782-4043',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '625 W 59th Ave Unit J',
+    addressLocality: 'Anchorage',
+    addressRegion: 'AK',
+    postalCode: '99518',
+    addressCountry: 'US',
   },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 61.1676417,
-    "longitude": -149.8942242
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 61.1676417,
+    longitude: -149.8942242,
   },
-  "areaServed": {
-    "@type": "City",
-    "name": cityName
-  }
+  areaServed: {
+    '@type': 'City',
+    name: cityName,
+  },
+  ...(aggregateRating && { aggregateRating }),
 };
 ---
 
